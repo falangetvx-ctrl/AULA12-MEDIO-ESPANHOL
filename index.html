@@ -1,0 +1,5250 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <!-- =========================================================
+       HEAD DA PÁGINA
+       ---------------------------------------------------------
+       AQUI FICAM:
+       - codificação do arquivo
+       - ajuste de responsividade
+       - título da aba
+       - CSS completo da apostila
+  ========================================================== -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>APOSTILA FALANGE — MODELO UNIVERSAL</title>
+
+  <style>
+    /* =========================================================
+       MAPA GERAL DO CSS
+       ---------------------------------------------------------
+       1. VARIÁVEIS GERAIS
+       2. RESET
+       3. BODY E ESTRUTURA GERAL
+       4. REGISTRO DO ESTUDANTE
+       5. FOLHA / PÁGINA / CONTEÚDO
+       6. CABEÇALHO UNIVERSAL
+       7. PÁGINA 1 — HOTSPOT
+       8. PÁGINA 2 — JOGO DE PALAVRAS
+       9. SOPA DE LETRAS
+       10. RESPONSIVIDADE
+    ========================================================= */
+
+    /* =========================================================
+       1) VARIÁVEIS GERAIS DO TEMA
+       ---------------------------------------------------------
+       CENTRALIZA AS CORES E MEDIDAS PRINCIPAIS.
+       SE MUDAR AQUI, MUDA NO ARQUIVO TODO.
+    ========================================================== */
+    :root{
+      --paper:#f3f4df;
+      --blue:#3aa0e6;
+      --violet:#9b59b6;
+      --red:#d94b3a;
+      --green:#2ecc71;
+      --yellow:#f4c542;
+      --ink:#111;
+      --soft:#f8fafc;
+      --shadow:0 10px 30px rgba(0,0,0,.18);
+      --radius:14px;
+    }
+
+    /* =========================================================
+       2) RESET BÁSICO
+       ---------------------------------------------------------
+       REMOVE DIFERENÇAS ESTRANHAS ENTRE NAVEGADORES.
+    ========================================================== */
+    *{
+      box-sizing:border-box;
+    }
+
+    html, body{
+      max-width:100%;
+    }
+
+    body{
+      margin:0;
+      background:#e5e7eb;
+      font-family:Arial, Helvetica, sans-serif;
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      overflow-x:auto;
+      overflow-y:auto;
+    }
+
+    img{
+      max-width:100%;
+      display:block;
+    }
+
+    button, input, select, textarea{
+      font:inherit;
+    }
+
+    [hidden]{
+      display:none !important;
+    }
+
+    /* =========================================================
+       3) ESTRUTURA GERAL
+       ---------------------------------------------------------
+       .wrap = PACOTE DE TODAS AS PÁGINAS
+       .page = FOLHA INDIVIDUAL
+       .content = ÁREA INTERNA SEGURA
+    ========================================================== */
+    .wrap{
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      padding-bottom:18px;
+    }
+
+    .page{
+      width:297mm;
+      min-height:480mm;
+      background:var(--paper);
+      position:relative;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:block;
+      margin:0 auto;
+    }
+
+    .content{
+      position:absolute;
+      left:18mm;
+      right:18mm;
+      top:16mm;
+      bottom:18mm;
+    }
+
+    .content::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(1200px 600px at 82% 12%, rgba(58,160,230,.14), transparent 60%),
+        radial-gradient(1200px 600px at 14% 92%, rgba(155,89,182,.14), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.28));
+      z-index:0;
+      pointer-events:none;
+    }
+
+    .content > *{
+      position:relative;
+      z-index:1;
+    }
+
+    /* =========================================================
+       4) REGISTRO DO ESTUDANTE
+       ---------------------------------------------------------
+       ESSA TELA APARECE ANTES DA APOSTILA.
+    ========================================================== */
+    #studentRegister{
+      width:min(560px, calc(100vw - 24px));
+      margin:20px auto;
+    }
+
+    .registerBox{
+      background:#fff;
+      border:3px solid var(--blue);
+      border-radius:14px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .registerTitle{
+      text-align:center;
+      color:var(--violet);
+      font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+      font-weight:900;
+      margin-bottom:12px;
+      font-size:18pt;
+    }
+
+    .registerRow{
+      display:grid;
+      grid-template-columns:100px 1fr;
+      gap:8px;
+      align-items:center;
+      margin-bottom:10px;
+    }
+
+    .registerLabel{
+      text-align:right;
+      font-weight:900;
+      font-size:10pt;
+    }
+
+    .registerInput{
+      height:40px;
+      border:2px solid rgba(0,0,0,.35);
+      border-radius:10px;
+      padding:0 10px;
+      background:#fff;
+    }
+
+    .registerInput:focus{
+      outline:none;
+      border-color:var(--violet);
+      box-shadow:0 0 0 3px rgba(155,89,182,.12);
+    }
+
+    .registerButton{
+      width:100%;
+      height:44px;
+      border:none;
+      border-radius:12px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .registerButton:hover{
+      filter:brightness(.98);
+    }
+
+    /* =========================================================
+       5) CABEÇALHO UNIVERSAL
+       ---------------------------------------------------------
+       USADO NAS PÁGINAS DA APOSTILA.
+    ========================================================== */
+    .titleRow{
+      margin-top:6px;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      column-gap:10px;
+    }
+
+    .bncc{
+      font-weight:700;
+      font-size:10pt;
+      color:#000;
+      text-align:right;
+    }
+
+    .centerTitle{
+      color:var(--violet);
+      font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.8px;
+      font-size:11pt;
+      text-align:center;
+    }
+
+    .bars{
+      margin-top:5px;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+    }
+
+    .bar{
+      height:7px;
+      background:var(--blue);
+      border-radius:2px;
+    }
+
+    /* =========================================================
+       6) COLUNAS E CARDS UNIVERSAIS
+    ========================================================== */
+    .cols{
+      margin-top:8px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      align-items:start;
+    }
+
+    .card,
+    .card-padrao{
+      background:#fff;
+      border:2px dotted var(--violet);
+      border-radius:12px;
+      padding:10px;
+    }
+
+    .cardTitle,
+    .titulo-lateral{
+      font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+      font-weight:900;
+      text-align:center;
+      font-size:10pt;
+      margin-bottom:8px;
+      color:#4a148c;
+      text-transform:uppercase;
+      letter-spacing:.2px;
+    }
+
+    /* =========================================================
+       7) PÁGINA 1 — HOTSPOT
+       ---------------------------------------------------------
+       IMAGEM COM ÁREAS CLICÁVEIS E MODAL EXPLICATIVO.
+    ========================================================== */
+    #pagina,
+#pagina3{
+  width:100%;
+  display:block;
+}
+
+    #pagina .hotspot-page,
+#pagina3 .hotspot-page{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    #pagina .hotspot-title,
+#pagina3 .hotspot-title{
+      background:#ffffff;
+      border:2px dotted #9b59b6;
+      border-radius:12px;
+      padding:12px;
+      text-align:center;
+    }
+
+    #pagina .hotspot-title{
+      margin:0 0 6px 0;
+      font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+      font-weight:900;
+      font-size:16pt;
+      color:#4a148c;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+    }
+
+    #pagina .hotspot-subtitle,
+#pagina3 .hotspot-subtitle{
+      margin:0;
+      font-size:10pt;
+      line-height:1.35;
+      color:#111;
+    }
+
+    #pagina .hotspot-card,
+#pagina3 .hotspot-card{
+      background:#ffffff;
+      border:2px dotted #9b59b6;
+      border-radius:12px;
+      padding:10px;
+    }
+
+    #pagina .hotspot-stage,
+#pagina3 .hotspot-stage{
+      position:relative;
+      width:100%;
+      max-width:980px;
+      margin:0 auto;
+      border-radius:12px;
+      overflow:hidden;
+      background:#f7f7f7;
+      min-height:520px;
+    }
+
+    #pagina .hotspot-image,
+#pagina3 .hotspot-image{
+      width:100%;
+      height:auto;
+      display:block;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+
+    #pagina .hotspot-layer,
+#pagina3 .hotspot-layer{
+      position:absolute;
+      inset:0;
+    }
+
+    #pagina .word-hotspot,
+#pagina3 .word-hotspot{
+  position:absolute;
+  border:none;
+  background:rgba(255,255,255,0);
+  cursor:pointer;
+  border-radius:8px;
+  transition:all .18s ease;
+  outline:none;
+}
+
+#pagina .word-hotspot:hover,
+#pagina3 .word-hotspot:hover{
+  background:rgba(58,160,230,.18);
+  box-shadow:0 0 0 2px rgba(58,160,230,.45) inset;
+}
+
+#pagina .word-hotspot:focus,
+#pagina3 .word-hotspot:focus{
+  background:rgba(217,75,58,.16);
+  box-shadow:0 0 0 2px rgba(217,75,58,.7) inset;
+}
+
+    /* =========================================================
+       MODAL DO HOTSPOT
+    ========================================================== */
+    .hm-modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      padding:20px;
+    }
+
+    .hm-modal.is-open{
+      display:flex;
+    }
+
+    .hm-modal-overlay{
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,.45);
+    }
+
+    .hm-modal-box{
+      position:relative;
+      width:min(680px, 96vw);
+      background:#fff;
+      border-radius:16px;
+      box-shadow:0 18px 40px rgba(0,0,0,.28);
+      overflow:hidden;
+      z-index:1;
+      animation:hmPop .18s ease;
+    }
+
+    @keyframes hmPop{
+      from{
+        opacity:0;
+        transform:translateY(8px) scale(.98);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+      }
+    }
+
+    .hm-modal-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:14px 16px;
+      background:#3aa0e6;
+    }
+
+    .hm-modal-title{
+      margin:0;
+      color:#fff;
+      font-size:14pt;
+      font-weight:900;
+      letter-spacing:.3px;
+    }
+
+    .hm-close-btn{
+      width:38px;
+      height:38px;
+      border:none;
+      border-radius:10px;
+      background:#ffffff;
+      color:#111;
+      font-size:20px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .hm-modal-content{
+      padding:18px 18px 8px 18px;
+    }
+
+    .hm-modal-text{
+      margin:0;
+      font-size:12pt;
+      line-height:1.6;
+      color:#111;
+      white-space:pre-line;
+    }
+
+    .hm-modal-footer{
+      padding:0 18px 18px 18px;
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    .hm-action-btn{
+      min-width:120px;
+      height:42px;
+      border:none;
+      border-radius:12px;
+      background:#9b59b6;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    /* =========================================================
+       8) PÁGINA 2 — JOGO ORDENA LAS PALABRAS
+    ========================================================== */
+    #pagina-jogo{
+      width:100%;
+      display:block;
+      margin-top:8px;
+    }
+
+    #pagina-jogo .cols{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      align-items:start;
+    }
+
+    #pagina-jogo .coluna-esquerda,
+    #pagina-jogo .coluna-direita{
+      width:100%;
+      min-width:0;
+    }
+
+    #pagina-jogo .titulo-jogo{
+      margin:0 0 6px 0;
+      font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+      font-weight:900;
+      font-size:16pt;
+      color:#4a148c;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+      text-align:center;
+    }
+
+    #pagina-jogo .subtitulo-jogo{
+      margin:0;
+      font-size:10pt;
+      line-height:1.35;
+      color:#111;
+      text-align:center;
+    }
+
+    #pagina-jogo .topo-card{
+      text-align:center;
+    }
+
+    #pagina-jogo .area-imagem{
+      background:#f9f9f9;
+      border:2px dashed #d8d8d8;
+      border-radius:12px;
+      min-height:220px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:10px;
+      margin-bottom:10px;
+    }
+
+    #pagina-jogo #imgAtividade{
+      max-width:100%;
+      max-height:200px;
+      object-fit:contain;
+      display:block;
+    }
+
+    #pagina-jogo .bloco-embaralhada{
+      background:#f0f7ff;
+      border:2px dashed #3aa0e6;
+      border-radius:12px;
+      padding:10px;
+      text-align:center;
+      margin-bottom:10px;
+    }
+
+    #pagina-jogo .rotulo-bloco,
+    #pagina-jogo .rotulo-resposta{
+      display:block;
+      font-size:10pt;
+      font-weight:700;
+      margin-bottom:6px;
+      color:#333;
+    }
+
+    #pagina-jogo .palavra-embaralhada{
+      font-size:22pt;
+      font-weight:900;
+      letter-spacing:2px;
+      line-height:1.1;
+      color:#222;
+      word-break:break-word;
+    }
+
+    #pagina-jogo .bloco-resposta{
+      margin-bottom:10px;
+    }
+
+    #pagina-jogo #respostaAluno{
+      width:100%;
+      padding:10px 12px;
+      font-size:13pt;
+      border:2px solid #d0d0d0;
+      border-radius:10px;
+      outline:none;
+      background:#fff;
+    }
+
+    #pagina-jogo #respostaAluno:focus{
+      border-color:#9b59b6;
+      box-shadow:0 0 0 3px rgba(155,89,182,.15);
+    }
+
+    #pagina-jogo .linha-botoes{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    #pagina-jogo button,
+    .ctrlBtn{
+      border:none;
+      border-radius:10px;
+      font-weight:900;
+      cursor:pointer;
+      min-height:42px;
+      padding:10px 14px;
+      color:#fff;
+    }
+
+    #pagina-jogo .linha-botoes button{
+      flex:1 1 140px;
+    }
+
+    #pagina-jogo #btnVerificar{ background:#3aa0e6; }
+    #pagina-jogo #btnReiniciar{ background:#9b59b6; }
+    #pagina-jogo #btnJogarNovamente{ background:#2ecc71; }
+
+    #pagina-jogo #feedback,
+    #soupModalMsg,
+    #soupInlineMsg{
+      padding:10px;
+      border-radius:10px;
+      background:#eee;
+      font-weight:700;
+      margin-top:8px;
+      font-size:10pt;
+      line-height:1.35;
+      color:#222;
+    }
+
+    #pagina-jogo #feedback.ok,
+    #soupModalMsg.ok,
+    #soupInlineMsg.ok{
+      background:#d4edda;
+      color:#155724;
+      border:1px solid #c3e6cb;
+    }
+
+    #pagina-jogo #feedback.erro,
+    #soupModalMsg.erro,
+    #soupInlineMsg.erro{
+      background:#f8d7da;
+      color:#721c24;
+      border:1px solid #f5c6cb;
+    }
+
+    #pagina-jogo .linha-progresso-texto{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-size:10pt;
+      margin-bottom:8px;
+    }
+
+    #pagina-jogo .barra-progresso{
+      width:100%;
+      height:14px;
+      background:#e5e7eb;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.08);
+    }
+
+    #pagina-jogo #barraInterna{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg, #3aa0e6, #9b59b6);
+      border-radius:999px;
+      transition:width .25s ease;
+    }
+
+    #pagina-jogo #listaAcertos{
+      font-size:10pt;
+      line-height:1.45;
+      color:#111;
+    }
+
+    /* =========================================================
+       9) SOPA DE LETRAS
+       ---------------------------------------------------------
+       COLUNA DIREITA + MODAL DA SOPA
+    ========================================================== */
+    #pagina-jogo .texto-sopa-box{
+      background:#ffffff;
+      border:2px dashed #3aa0e6;
+      border-radius:12px;
+      padding:12px;
+      margin-top:12px;
+    }
+
+    #pagina-jogo .texto-sopa-linha{
+      margin:0 0 10px 0;
+      font-size:10.3pt;
+      line-height:1.75;
+      color:#111;
+      text-align:justify;
+    }
+
+    #pagina-jogo .blank-word{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:118px;
+      min-height:30px;
+      padding:3px 10px;
+      margin:0 2px;
+      text-align:center;
+      border-bottom:3px solid rgba(0,0,0,.45);
+      border-radius:8px;
+      background:rgba(58,160,230,.08);
+      font-weight:900;
+      color:#374151;
+      vertical-align:middle;
+    }
+
+    #pagina-jogo .blank-word.done{
+      background:rgba(46,204,113,.16);
+      border-bottom-color:#2ecc71;
+      color:#166534;
+    }
+
+    #pagina-jogo .sopa-palavras-box{
+      margin-top:12px;
+      background:#fffdf5;
+      border:2px dashed rgba(244,197,66,.7);
+      border-radius:12px;
+      padding:10px;
+    }
+
+    #pagina-jogo .sopa-palavras-titulo{
+      margin:0 0 8px 0;
+      font-size:10pt;
+      font-weight:900;
+      color:#8a5a00;
+      text-transform:uppercase;
+      letter-spacing:.3px;
+    }
+
+    #pagina-jogo .soupWordList,
+    #soupWordListModal{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:0;
+    }
+
+    #pagina-jogo .soupChip,
+    #soupWordListModal .soupChip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:32px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:2px dashed rgba(0,0,0,.18);
+      background:#fff;
+      font-size:9pt;
+      font-weight:900;
+      color:#333;
+    }
+
+    #pagina-jogo .soupChip.done,
+    #soupWordListModal .soupChip.done{
+      background:#d4edda;
+      color:#155724;
+      border-color:#2ecc71;
+    }
+
+    #pagina-jogo .sopa-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    #pagina-jogo .btn-sopa-abrir,
+    #pagina-jogo .btn-sopa-check,
+    #pagina-jogo .btn-sopa-reset{
+      flex:1 1 150px;
+      min-height:42px;
+      border:none;
+      border-radius:10px;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+      padding:10px 14px;
+    }
+
+    #pagina-jogo .btn-sopa-abrir{ background:#3aa0e6; }
+    #pagina-jogo .btn-sopa-check{ background:#9b59b6; }
+    #pagina-jogo .btn-sopa-reset{ background:#d94b3a; }
+
+    /* =========================================================
+       MODAL GLOBAL DA SOPA
+    ========================================================== */
+    #soupOverlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.60);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:99999;
+      padding:14px;
+    }
+
+    #soupOverlay.is-open{
+      display:flex;
+    }
+
+    #soupModalCard{
+      width:min(1180px, 96vw);
+      max-height:92vh;
+      background:#fff;
+      border-radius:18px;
+      padding:14px;
+      box-shadow:0 18px 50px rgba(0,0,0,.35);
+      border:2px solid rgba(0,0,0,.12);
+      overflow:hidden;
+    }
+
+    #soupModalInner{
+      display:flex;
+      flex-direction:column;
+      max-height:calc(92vh - 28px);
+    }
+
+    .soupModalHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .soupModalSubtitle{
+      margin:4px 0 0 0;
+      font-size:10pt;
+      line-height:1.45;
+      color:#111;
+    }
+
+    #soupWrapModal{
+      margin-top:10px;
+      overflow:auto;
+      border:2px solid rgba(0,0,0,.12);
+      border-radius:14px;
+      padding:12px;
+      background:#fdfdfd;
+    }
+
+    /* =========================================================
+       GRADE DA SOPA COM NUMERAÇÃO
+       ---------------------------------------------------------
+       14 COLUNAS:
+       - 1ª = NUMERAÇÃO LATERAL
+       - 13 = LETRAS
+    ========================================================== */
+    .soupGrid{
+      display:grid;
+      grid-template-columns:repeat(14, 42px);
+      gap:5px;
+      justify-content:center;
+      min-width:max-content;
+    }
+
+    .coordCell,
+    .soupCell{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:8px;
+      font-weight:900;
+      user-select:none;
+    }
+
+    .coordTop{
+      width:42px;
+      height:24px;
+      font-size:10pt;
+      color:#2563eb;
+    }
+
+    .coordLeft{
+      width:42px;
+      height:42px;
+      font-size:10pt;
+      color:#dc2626;
+    }
+
+    .cornerCell{
+      width:42px;
+      height:24px;
+    }
+
+    .soupCell{
+      width:42px;
+      height:42px;
+      border:2px solid rgba(0,0,0,.14);
+      background:#fff;
+      font-size:12pt;
+      cursor:pointer;
+      transition:.12s;
+    }
+
+    .soupCell:hover{
+      transform:translateY(-1px);
+      border-color:rgba(58,160,230,.45);
+    }
+
+    .soupCell.selected{
+      background:rgba(58,160,230,.18);
+      border-color:rgba(58,160,230,.95);
+      box-shadow:0 0 0 2px rgba(58,160,230,.15) inset;
+    }
+
+    .soupCell.locked{
+  background:#fff;
+  border:2px solid rgba(0,0,0,.14);
+  color:#111;
+  cursor:pointer;
+}
+
+    .soupControls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .soupControls .ctrlBtn{
+      flex:1 1 180px;
+    }
+
+    .ctrlBtn.blue{ background:#3aa0e6; }
+    .ctrlBtn.violet{ background:#9b59b6; }
+    .ctrlBtn.red{ background:#d94b3a; }
+
+    /* =========================================================
+       10) RESPONSIVIDADE
+    ========================================================== */
+    @media (max-width:1100px){
+      .page{
+        width:min(297mm, calc(100vw - 20px));
+        min-height:280mm;
+        height:auto;
+        overflow:visible;
+      }
+
+      .content{
+        position:relative;
+        left:auto;
+        right:auto;
+        top:auto;
+        bottom:auto;
+        padding:16mm 18mm 18mm 18mm;
+      }
+
+      .titleRow{
+        grid-template-columns:1fr;
+      }
+
+      .bncc{
+        text-align:center;
+      }
+
+      .cols,
+      #pagina-jogo .cols{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width:900px){
+      #pagina .hotspot-title{
+        font-size:13pt;
+      }
+
+      #pagina .hotspot-subtitle{
+        font-size:9pt;
+      }
+
+      .hm-modal-title{
+        font-size:12pt;
+      }
+
+      .hm-modal-text{
+        font-size:10.5pt;
+      }
+
+      .soupGrid{
+        grid-template-columns:repeat(14, 30px);
+        gap:4px;
+      }
+
+      .coordTop,
+      .coordLeft,
+      .soupCell,
+      .cornerCell{
+        width:30px;
+      }
+
+      .coordTop,
+      .cornerCell{
+        height:20px;
+        font-size:9pt;
+      }
+
+      .coordLeft,
+      .soupCell{
+        height:30px;
+      }
+
+      .soupCell{
+        font-size:10pt;
+      }
+
+      #pagina-jogo .blank-word{
+        min-width:95px;
+        min-height:28px;
+        font-size:9pt;
+      }
+    }
+/* =========================================================
+   8.1) PÁGINA 4 — JOGO ORDENA LAS PALABRAS (MATERIAL ESCOLAR)
+   ---------------------------------------------------------
+   ESTA PÁGINA REPETE A LÓGICA DA PÁGINA 2,
+   MAS COM IDs PRÓPRIOS PARA NÃO CONFLITAR.
+========================================================= */
+#pagina-jogo4{
+  width:100%;
+  display:block;
+  margin-top:8px;
+}
+
+#pagina-jogo4 .cols{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  align-items:start;
+}
+
+#pagina-jogo4 .coluna-esquerda,
+#pagina-jogo4 .coluna-direita{
+  width:100%;
+  min-width:0;
+}
+
+#pagina-jogo4 .titulo-jogo{
+  margin:0 0 6px 0;
+  font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+  font-weight:900;
+  font-size:16pt;
+  color:#4a148c;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  text-align:center;
+}
+
+#pagina-jogo4 .subtitulo-jogo{
+  margin:0;
+  font-size:10pt;
+  line-height:1.35;
+  color:#111;
+  text-align:center;
+}
+
+#pagina-jogo4 .topo-card{
+  text-align:center;
+}
+
+#pagina-jogo4 .area-imagem{
+  background:#f9f9f9;
+  border:2px dashed #d8d8d8;
+  border-radius:12px;
+  min-height:220px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:10px;
+  margin-bottom:10px;
+}
+
+#pagina-jogo4 #imgAtividade4{
+  max-width:100%;
+  max-height:200px;
+  object-fit:contain;
+  display:block;
+}
+
+#pagina-jogo4 .bloco-embaralhada{
+  background:#f0f7ff;
+  border:2px dashed #3aa0e6;
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+  margin-bottom:10px;
+}
+
+#pagina-jogo4 .rotulo-bloco,
+#pagina-jogo4 .rotulo-resposta{
+  display:block;
+  font-size:10pt;
+  font-weight:700;
+  margin-bottom:6px;
+  color:#333;
+}
+
+#pagina-jogo4 .palavra-embaralhada{
+  font-size:22pt;
+  font-weight:900;
+  letter-spacing:2px;
+  line-height:1.1;
+  color:#222;
+  word-break:break-word;
+}
+
+#pagina-jogo4 .bloco-resposta{
+  margin-bottom:10px;
+}
+
+#pagina-jogo4 #respostaAluno4{
+  width:100%;
+  padding:10px 12px;
+  font-size:13pt;
+  border:2px solid #d0d0d0;
+  border-radius:10px;
+  outline:none;
+  background:#fff;
+}
+
+#pagina-jogo4 #respostaAluno4:focus{
+  border-color:#9b59b6;
+  box-shadow:0 0 0 3px rgba(155,89,182,.15);
+}
+
+#pagina-jogo4 .linha-botoes{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+
+#pagina-jogo4 button{
+  border:none;
+  border-radius:10px;
+  font-weight:900;
+  cursor:pointer;
+  min-height:42px;
+  padding:10px 14px;
+  color:#fff;
+}
+
+#pagina-jogo4 .linha-botoes button{
+  flex:1 1 140px;
+}
+
+#pagina-jogo4 #btnVerificar4{ background:#3aa0e6; }
+#pagina-jogo4 #btnReiniciar4{ background:#9b59b6; }
+#pagina-jogo4 #btnJogarNovamente4{ background:#2ecc71; }
+
+#pagina-jogo4 #feedback4{
+  padding:10px;
+  border-radius:10px;
+  background:#eee;
+  font-weight:700;
+  margin-top:8px;
+  font-size:10pt;
+  line-height:1.35;
+  color:#222;
+}
+
+#pagina-jogo4 #feedback4.ok{
+  background:#d4edda;
+  color:#155724;
+  border:1px solid #c3e6cb;
+}
+
+#pagina-jogo4 #feedback4.erro{
+  background:#f8d7da;
+  color:#721c24;
+  border:1px solid #f5c6cb;
+}
+
+#pagina-jogo4 .linha-progresso-texto{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  font-size:10pt;
+  margin-bottom:8px;
+}
+
+#pagina-jogo4 .barra-progresso{
+  width:100%;
+  height:14px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,.08);
+}
+
+#pagina-jogo4 #barraInterna4{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg, #3aa0e6, #9b59b6);
+  border-radius:999px;
+  transition:width .25s ease;
+}
+
+#pagina-jogo4 #listaAcertos4{
+  font-size:10pt;
+  line-height:1.45;
+  color:#111;
+}
+/* =========================================================
+   MODAL DO JOGO DA MEMÓRIA — PÁGINA 4
+========================================================= */
+.memoria-modal-box{
+  width:min(1280px, 96vw);
+  max-height:94vh;
+}
+
+.memoria-iframe-wrap{
+  padding:12px 12px 0 12px;
+}
+
+#memoriaFrame4{
+  width:100%;
+  height:72vh;
+  border:none;
+  border-radius:12px;
+  background:#fff;
+  display:block;
+}
+/* =========================================================
+   PÁGINA 5 — GENIALLY EM DUAS COLUNAS
+========================================================= */
+#pagina5-links{
+  width:100%;
+  display:block;
+  margin-top:8px;
+}
+
+#pagina5-links .cols{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  align-items:start;
+}
+
+#pagina5-links .coluna-esquerda,
+#pagina5-links .coluna-direita{
+  width:100%;
+  min-width:0;
+}
+
+#pagina5-links .card-topo-link{
+  text-align:center;
+}
+
+#pagina5-links .titulo-link{
+  margin:0 0 6px 0;
+  font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+  font-weight:900;
+  font-size:16pt;
+  color:#4a148c;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  text-align:center;
+}
+
+#pagina5-links .subtitulo-link{
+  margin:0;
+  font-size:10pt;
+  line-height:1.4;
+  color:#111;
+  text-align:center;
+}
+
+#pagina5-links .genially-box{
+  background:#fff;
+  border:2px dotted var(--violet);
+  border-radius:12px;
+  padding:10px;
+}
+
+#pagina5-links .genially-head{
+  margin-bottom:8px;
+  text-align:center;
+  font-weight:900;
+  font-size:10pt;
+  color:#4a148c;
+  text-transform:uppercase;
+}
+
+#pagina5-links .genially-frame{
+  width:100%;
+  height:560px;
+  border:none;
+  border-radius:12px;
+  background:#fff;
+  display:block;
+}
+/* =========================================================
+   PÁGINA 5 — JOGO DE ESCUTA COM CORTINA DE PIXELS
+========================================================= */
+#pagina5-audio-game{
+  margin-top:14px;
+}
+
+#pagina5-audio-game .audio-game-card{
+  background:#fff;
+  border:2px dotted var(--violet);
+  border-radius:12px;
+  padding:12px;
+}
+
+#pagina5-audio-game .audio-game-title{
+  margin:0 0 6px 0;
+  font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+  font-weight:900;
+  font-size:15pt;
+  color:#4a148c;
+  text-transform:uppercase;
+  text-align:center;
+}
+
+#pagina5-audio-game .audio-game-subtitle{
+  margin:0;
+  font-size:10pt;
+  line-height:1.45;
+  color:#111;
+  text-align:center;
+}
+
+#pagina5-audio-game .audio-game-actions{
+  display:flex;
+  justify-content:center;
+  margin-top:12px;
+}
+
+#btnAbrirAudioGame5{
+  min-width:260px;
+}
+
+/* MODAL DO CANVAS */
+.audio-game-modal-box{
+  width:min(1320px, 96vw);
+  max-height:94vh;
+}
+
+.audio-game-wrap{
+  padding:12px;
+  display:grid;
+  grid-template-columns:1.2fr .9fr;
+  gap:14px;
+  align-items:start;
+}
+
+.audio-game-left,
+.audio-game-right{
+  min-width:0;
+}
+
+.audio-stage{
+  position:relative;
+  width:100%;
+  aspect-ratio:16 / 10;
+  border-radius:16px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at top left, rgba(58,160,230,.16), transparent 32%),
+    linear-gradient(180deg, #f8fafc, #eef6ff);
+  border:2px solid rgba(0,0,0,.08);
+}
+
+#audioPhraseCanvas5{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.audio-stage-overlay{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:1;
+  transition:opacity .18s ease;
+}
+
+.audio-stage-overlay.hidden{
+  opacity:0;
+}
+
+.audio-game-panel{
+  background:#f8fafc;
+  border:2px dashed #3aa0e6;
+  border-radius:14px;
+  padding:12px;
+}
+
+.audio-panel-title{
+  margin:0 0 10px 0;
+  text-align:center;
+  color:#4a148c;
+  font-size:11pt;
+  font-weight:900;
+  text-transform:uppercase;
+}
+
+.audio-step-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:10px;
+  font-size:10pt;
+}
+
+.audio-progress{
+  width:100%;
+  height:14px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,.08);
+  margin-bottom:12px;
+}
+
+#audioProgressFill5{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg, #3aa0e6, #9b59b6);
+  transition:width .25s ease;
+}
+
+.audio-answer-list{
+  display:grid;
+  gap:8px;
+}
+
+.audio-answer-btn{
+  width:100%;
+  border:none;
+  border-radius:10px;
+  min-height:42px;
+  background:#9b59b6;
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+  padding:10px 12px;
+  text-align:left;
+}
+
+.audio-answer-btn:hover{
+  filter:brightness(.98);
+}
+
+.audio-controls{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.audio-controls button{
+  flex:1 1 180px;
+  border:none;
+  border-radius:10px;
+  min-height:42px;
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+  padding:10px 12px;
+}
+
+#btnPlayAudio5{ background:#3aa0e6; }
+#btnRestartAudioGame5{ background:#d94b3a; }
+
+#audioGameFeedback5{
+  margin-top:12px;
+  padding:10px;
+  border-radius:10px;
+  background:#eee;
+  font-weight:700;
+  font-size:10pt;
+  line-height:1.4;
+  color:#222;
+}
+
+#audioGameFeedback5.ok{
+  background:#d4edda;
+  color:#155724;
+  border:1px solid #c3e6cb;
+}
+
+#audioGameFeedback5.erro{
+  background:#f8d7da;
+  color:#721c24;
+  border:1px solid #f5c6cb;
+}
+
+@media (max-width:1100px){
+  .audio-game-wrap{
+    grid-template-columns:1fr;
+  }
+}
+  
+
+/* =========================================================
+   AJUSTE FINAL — RESPONSIVIDADE UNIVERSAL + CERTIFICADO ANTIFRAUDE
+   ---------------------------------------------------------
+   Reforços para evitar cortes em Android, iOS, tablet e computador.
+========================================================= */
+html{
+  width:100%;
+  min-width:0;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{
+  width:100%;
+  min-width:0;
+  overflow-x:hidden;
+  touch-action:manipulation;
+}
+.wrap,
+.page,
+.content,
+.card,
+.card-padrao,
+.cols,
+.coluna-esquerda,
+.coluna-direita{
+  min-width:0 !important;
+  max-width:100% !important;
+}
+.page{
+  width:min(297mm, calc(100vw - 20px));
+  height:auto !important;
+  min-height:auto !important;
+  overflow:visible !important;
+}
+.content{
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  top:auto !important;
+  bottom:auto !important;
+  padding:16mm 18mm 18mm 18mm;
+}
+.titleRow,
+.bars,
+.cols,
+#pagina-jogo .cols,
+#pagina-jogo4 .cols,
+#pagina5-links .cols{
+  min-width:0 !important;
+}
+iframe,
+video,
+canvas{
+  max-width:100% !important;
+}
+iframe{
+  width:100% !important;
+  border:0;
+  display:block;
+  min-height:clamp(520px, 78vh, 980px);
+  border-radius:12px;
+  background:#fff;
+}
+#memoriaFrame4{
+  height:clamp(560px, 78vh, 900px) !important;
+  min-height:560px !important;
+}
+.hm-modal,
+#soupOverlay,
+#certOverlay{
+  padding:max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)) !important;
+}
+.hm-modal-box,
+#soupModalCard,
+.memoria-modal-box{
+  max-width:96vw !important;
+  max-height:92dvh !important;
+}
+.hm-modal-content,
+#soupWrapModal,
+.memoria-iframe-wrap{
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+}
+#btnCert[disabled],
+#btnCert[data-ready="0"]{
+  opacity:.62 !important;
+  filter:grayscale(.25) saturate(.8) !important;
+  cursor:not-allowed !important;
+}
+
+/* Certificado no padrão antifraude da Aula 11 */
+#certOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999999;
+}
+#certCard{
+  width:min(980px, 96vw);
+  max-height:min(86dvh, 860px);
+  overflow:hidden;
+  background:var(--paper);
+  border:6px solid var(--blue);
+  border-radius:18px;
+  box-shadow:0 18px 55px rgba(0,0,0,.35);
+  padding:16px;
+}
+#certInner{
+  position:relative;
+  background:#fff;
+  border:3px dotted var(--violet);
+  border-radius:14px;
+  padding:16px;
+  max-height:calc(min(86dvh, 860px) - 44px);
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+}
+#certInner > *{
+  position:relative;
+  z-index:2;
+}
+#certTitle,
+#certSub,
+#certName,
+#certMeta,
+#certBtns,
+#certValidationBox,
+#certWatermark{
+  font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+  font-weight:900;
+}
+#certTitle{
+  color:var(--violet);
+  letter-spacing:.6px;
+  text-transform:uppercase;
+  font-size:13pt;
+  margin:0 0 10px 0;
+  text-align:center;
+}
+#certSub,#certName,#certMeta{
+  text-align:center;
+  color:#111;
+}
+#certName{
+  font-size:16pt;
+  margin:8px 0;
+}
+#certMeta{
+  line-height:1.35;
+}
+#certAntiCode{
+  color:#b01257;
+  letter-spacing:1px;
+  font-size:12pt;
+}
+#certWatermark{
+  margin-top:14px;
+  padding:10px;
+  border:2px dashed rgba(176,18,87,.45);
+  border-radius:14px;
+  background:rgba(255,216,239,.35);
+  color:#4a148c;
+  text-align:center;
+  font-size:10pt;
+}
+#certWatermarkCloud{
+  position:absolute;
+  inset:-40px;
+  z-index:1;
+  pointer-events:none;
+  opacity:.105;
+  transform:rotate(-18deg);
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
+  align-content:center;
+}
+.certWmItem{
+  font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+  font-weight:900;
+  font-size:10pt;
+  line-height:1.2;
+  color:#111;
+  border:2px solid rgba(176,18,87,.55);
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+  background:rgba(255,255,255,.30);
+  white-space:normal;
+}
+#certValidationBox{
+  margin-top:10px;
+  padding:10px;
+  border:3px solid rgba(17,115,51,.55);
+  border-radius:16px;
+  background:rgba(216,255,216,.45);
+  color:#0b5d2a;
+  text-align:center;
+  font-size:9.5pt;
+  line-height:1.35;
+}
+#certFingerprint{
+  display:inline-block;
+  margin-top:6px;
+  padding:4px 10px;
+  border-radius:999px;
+  background:#fff;
+  border:2px dashed rgba(0,0,0,.28);
+  color:#4a148c;
+  letter-spacing:.5px;
+}
+.certTamperNotice{
+  margin-top:8px;
+  font-size:8.8pt;
+  color:#7c1d1d;
+  font-weight:900;
+}
+#certBtns{
+  margin-top:14px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.certBtn{
+  min-height:40px;
+  padding:8px 18px;
+  border-radius:999px;
+  border:2px solid rgba(0,0,0,.45);
+  background:#fff;
+  cursor:pointer;
+}
+.certBtnPrimary{
+  background:var(--blue);
+  color:#fff;
+  border-color:transparent;
+}
+@media (max-width:1100px){
+  body{ padding:8px; }
+  .content{ padding:14mm 10mm 16mm 10mm; }
+  .titleRow{ grid-template-columns:1fr !important; gap:4px; }
+  .bncc{ text-align:center !important; }
+  .cols,
+  #pagina-jogo .cols,
+  #pagina-jogo4 .cols,
+  #pagina5-links .cols{
+    grid-template-columns:1fr !important;
+  }
+}
+@media (max-width:760px){
+  body{ padding:6px; }
+  .page{ width:calc(100vw - 12px) !important; }
+  .content{ padding:12mm 5mm 14mm 5mm; }
+  .registerRow{ grid-template-columns:1fr !important; }
+  .registerLabel{ text-align:left !important; }
+  .centerTitle{ font-size:10pt; }
+  .cardTitle,.titulo-lateral{ font-size:9.5pt; }
+  #pagina .hotspot-stage,
+  #pagina3 .hotspot-stage{
+    min-height:auto !important;
+  }
+  #pagina-jogo .palavra-embaralhada,
+  #pagina-jogo4 .palavra-embaralhada{
+    font-size:17pt !important;
+    letter-spacing:1px !important;
+  }
+  .linha-botoes,
+  .sopa-actions,
+  .soupControls{
+    flex-direction:column;
+  }
+  .linha-botoes button,
+  .sopa-actions button,
+  .soupControls button,
+  #btnCert{
+    width:100% !important;
+    flex:1 1 auto !important;
+  }
+  iframe{
+    min-height:620px;
+  }
+  #certCard{ width:96vw; padding:10px; border-width:4px; }
+  #certInner{ padding:12px; }
+  #certWatermarkCloud{ grid-template-columns:repeat(2, 1fr); opacity:.09; }
+  .certWmItem{ font-size:8pt; padding:7px; }
+}
+@media print{
+  *{
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+  body{ background:#fff !important; padding:0 !important; overflow:visible !important; }
+  .wrap{ display:block !important; }
+  .page{
+    width:297mm !important;
+    min-height:210mm !important;
+    box-shadow:none !important;
+    page-break-after:always;
+    overflow:visible !important;
+  }
+  #studentRegister,
+  #btnCert,
+  #soupOverlay,
+  .hm-modal{ display:none !important; }
+  body:not(.cert-ready) #certOverlay{ display:none !important; }
+  body.cert-ready #certOverlay{ position:static !important; inset:auto !important; background:#fff !important; display:flex !important; padding:0 !important; }
+  #certCard{ box-shadow:none !important; max-height:none !important; width:100% !important; }
+  #certInner{ max-height:none !important; overflow:visible !important; }
+  #certWatermarkCloud{ opacity:.16; }
+  #certBtns{ display:none !important; }
+}
+
+  </style>
+</head>
+
+<body>
+  <!-- =========================================================
+       MAPA GERAL DO HTML
+       ---------------------------------------------------------
+       1. REGISTRO DO ESTUDANTE
+       2. CONTEÚDO PRINCIPAL DA APOSTILA
+       3. PÁGINA 1 — HOTSPOT
+       4. PÁGINA 2 — JOGO + SOPA
+       5. MODAL GLOBAL DA SOPA
+       6. SCRIPTS
+  ========================================================== -->
+
+  <!-- =========================================================
+       BLOCO 1 — REGISTRO DO ESTUDANTE
+       ---------------------------------------------------------
+       O ALUNO PRECISA PREENCHER:
+       - nome
+       - escola
+       - turma
+       PARA ENTRAR NA AULA.
+  ========================================================== -->
+  <section id="studentRegister">
+    <div class="registerBox">
+      <div class="registerTitle">REGISTRO DO ESTUDANTE</div>
+
+      <div class="registerRow">
+        <label class="registerLabel" for="studentName">Nome</label>
+        <input type="text" id="studentName" class="registerInput" placeholder="Digite seu nome">
+      </div>
+
+      <div class="registerRow">
+        <label class="registerLabel" for="studentSchool">Escola</label>
+        <input type="text" id="studentSchool" class="registerInput" placeholder="Nome da escola">
+      </div>
+
+      <div class="registerRow">
+        <label class="registerLabel" for="studentClass">Turma</label>
+        <input type="text" id="studentClass" class="registerInput" placeholder="Ex: 1º Ano A">
+      </div>
+
+      <button id="startLessonBtn" class="registerButton">INICIAR A AULA</button>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       BLOCO 2 — APOSTILA COMPLETA
+       ---------------------------------------------------------
+       COMEÇA ESCONDIDA.
+       SÓ APARECE DEPOIS DO REGISTRO.
+  ========================================================== -->
+  <main class="wrap" id="mainWrap">
+
+    <!-- =======================================================
+         PÁGINA 1 — HOTSPOT
+    ======================================================== -->
+    <section class="page">
+      <div class="content">
+
+        <!-- CABEÇALHO DA PÁGINA -->
+        <div class="titleRow">
+          <div></div>
+          <div class="centerTitle">TÍTULO DA AULA / TEMA</div>
+          <div class="bncc">BNCC: CÓDIGOS AQUI</div>
+        </div>
+
+        <div class="bars">
+          <div class="bar"></div>
+          <div style="width:16px"></div>
+          <div class="bar"></div>
+        </div>
+
+        <!-- ÁREA DO HOTSPOT -->
+        <section id="pagina">
+          <div class="hotspot-page">
+            <div class="hotspot-header">
+              <h2 class="hotspot-title">DIAS, MESES Y ESTACIONES</h2>
+              <p class="hotspot-subtitle">
+                Clique nas palavras da imagem para abrir as explicações.
+              </p>
+            </div>
+
+            <div class="hotspot-card">
+              <div class="hotspot-stage" id="hotspotStage">
+                <img
+                  src="dias-meses-estaciones.jpg"
+                  alt="Dias, meses y estaciones"
+                  class="hotspot-image"
+                  id="hotspotImage"
+                >
+                <div class="hotspot-layer" id="hotspotLayer"></div>
+              </div>
+              <button type="button" id="btnFinalizarHotspot1" class="ctrlBtn blue" style="width:100%; margin-top:10px; color:#fff;">
+                ✅ FINALIZAR PÁGINA 1
+              </button>
+              <div id="hotspotMsg1" style="margin-top:8px; padding:10px; border-radius:10px; background:#eee; font-weight:700; font-size:10pt; line-height:1.35; color:#222; text-align:center;">
+                Clique nas palavras da imagem. Depois finalize esta página.
+              </div>
+            </div>
+          </div>
+
+          <!-- MODAL DO HOTSPOT -->
+          <div class="hm-modal" id="hmModal" aria-hidden="true">
+            <div class="hm-modal-overlay" id="hmModalOverlay"></div>
+
+            <div
+              class="hm-modal-box"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="hmModalTitle"
+              aria-describedby="hmModalText"
+            >
+              <div class="hm-modal-top">
+                <h3 id="hmModalTitle" class="hm-modal-title">Palavra</h3>
+                <button type="button" class="hm-close-btn" id="hmCloseBtn" aria-label="Fechar explicação">×</button>
+              </div>
+
+              <div class="hm-modal-content">
+                <p id="hmModalText" class="hm-modal-text"></p>
+              </div>
+
+              <div class="hm-modal-footer">
+                <button type="button" class="hm-action-btn" id="hmCloseBtnFooter">FECHAR</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+    <!-- =======================================================
+         PÁGINA 2 — JOGO + SOPA
+    ======================================================== -->
+    <section class="page">
+      <div class="content">
+
+        <!-- CABEÇALHO DA PÁGINA -->
+        <div class="titleRow">
+          <div></div>
+          <div class="centerTitle">ORDENA LAS PALABRAS</div>
+          <div class="bncc">BNCC: EF06LI, EF07LI</div>
+        </div>
+
+        <div class="bars">
+          <div class="bar"></div>
+          <div style="width:16px"></div>
+          <div class="bar"></div>
+        </div>
+
+        <section id="pagina-jogo">
+          <div class="cols">
+
+            <!-- =================================================
+                 COLUNA ESQUERDA — JOGO PRINCIPAL
+            ================================================== -->
+            <div class="coluna-esquerda">
+
+              <!-- APRESENTAÇÃO -->
+              <div class="card-padrao topo-card">
+                <h2 class="titulo-jogo">ORDENA LAS PALABRAS</h2>
+                <p class="subtitulo-jogo">
+                  Observe a imagem, leia a palavra embaralhada e escreva a forma correta em espanhol.
+                  <strong>Atenção:</strong> se errar, o jogo volta para o início.
+                </p>
+              </div>
+
+              <!-- CARD PRINCIPAL DO JOGO -->
+              <div class="card-padrao card-jogo" id="cardJogo">
+                <div class="area-imagem">
+                  <img id="imgAtividade" src="" alt="Atividade em espanhol">
+                </div>
+
+                <div class="bloco-embaralhada">
+                  <span class="rotulo-bloco">PALAVRA EMBARALHADA</span>
+                  <div class="palavra-embaralhada" id="palavraEmbaralhada">--------</div>
+                </div>
+
+                <div class="bloco-resposta">
+                  <label for="respostaAluno" class="rotulo-resposta">ESCREVA A PALAVRA CORRETA</label>
+                  <input id="respostaAluno" type="text" placeholder="Digite aqui..." autocomplete="off">
+                </div>
+
+                <div class="linha-botoes">
+                  <button id="btnVerificar" type="button">VERIFICAR</button>
+                  <button id="btnReiniciar" type="button">REINICIAR</button>
+                </div>
+
+                <div id="feedback">Clique em VERIFICAR para validar sua resposta.</div>
+              </div>
+
+              <!-- PROGRESSO -->
+              <div class="card-padrao">
+                <div class="titulo-lateral">PROGRESSO</div>
+                <div class="linha-progresso-texto">
+                  <span>Etapa atual</span>
+                  <strong id="progressoTexto">1 / 14</strong>
+                </div>
+                <div class="barra-progresso">
+                  <div id="barraInterna"></div>
+                </div>
+              </div>
+
+              <!-- LISTA DE ACERTOS -->
+              <div class="card-padrao">
+                <div class="titulo-lateral">CONCLUÍDAS</div>
+                <div id="listaAcertos">Nenhuma palavra acertada ainda.</div>
+                
+              </div>
+
+              <!-- CARD FINAL -->
+              <div class="card-padrao card-final" id="cardFinal" hidden>
+                <h3 style="margin-top:0;">¡MUY BIEN!</h3>
+                <p>Você concluiu todas as atividades com sucesso.</p>
+                <button id="btnJogarNovamente" type="button">JOGAR NOVAMENTE</button>
+              </div>
+            </div>
+
+            <!-- =================================================
+                 COLUNA DIREITA — SOPA DE LETRAS
+            ================================================== -->
+            <div class="coluna-direita">
+              <div class="card-padrao">
+                <div class="titulo-lateral">DESAFIO EXTRA — SOPA PREMIUM</div>
+
+                <p style="font-size:10pt; line-height:1.45; margin:0 0 8px 0; text-align:center;">
+                  Leia o texto, interprete as pistas e encontre as palavras na sopa.
+                  Cada palavra correta completa automaticamente uma lacuna.
+                </p>
+
+                <!-- TEXTO COM LACUNAS -->
+                <div class="texto-sopa-box">
+                  <p class="texto-sopa-linha">
+                    En <span class="blank-word" id="sw_b1">__________</span>, muchos estudiantes
+                    vuelven a la escuela después del descanso.
+                  </p>
+
+                  <p class="texto-sopa-linha">
+                    El <span class="blank-word" id="sw_b2">__________</span> es un día de la semana
+                    y también marca el inicio de nuevas actividades.
+                  </p>
+
+                  <p class="texto-sopa-linha">
+                    <span class="blank-word" id="sw_b3">__________</span> y
+                    <span class="blank-word" id="sw_b4">__________</span> son meses del año.
+                  </p>
+
+                  <p class="texto-sopa-linha">
+                    <span class="blank-word" id="sw_b5">__________</span>,
+                    <span class="blank-word" id="sw_b6">__________</span>,
+                    <span class="blank-word" id="sw_b7">__________</span> y
+                    <span class="blank-word" id="sw_b8">__________</span>
+                    son estaciones del año.
+                  </p>
+
+                  <p class="texto-sopa-linha">
+                    Todo esto forma parte del <span class="blank-word" id="sw_b9">__________</span>.
+                  </p>
+                </div>
+
+                <!-- LISTA DE PALAVRAS -->
+                <div class="sopa-palavras-box">
+                  <div class="sopa-palavras-titulo">PALAVRAS PARA ENCONTRAR</div>
+
+                  <div id="soupWordList" class="soupWordList">
+                    <span class="soupChip" data-word="LUNES">LUNES</span>
+                    <span class="soupChip" data-word="MARTES">MARTES</span>
+                    <span class="soupChip" data-word="ENERO">ENERO</span>
+                    <span class="soupChip" data-word="JULIO">JULIO</span>
+                    <span class="soupChip" data-word="PRIMAVERA">PRIMAVERA</span>
+                    <span class="soupChip" data-word="VERANO">VERANO</span>
+                    <span class="soupChip" data-word="OTOÑO">OTOÑO</span>
+                    <span class="soupChip" data-word="INVIERNO">INVIERNO</span>
+                    <span class="soupChip" data-word="CALENDARIO">CALENDARIO</span>
+                  </div>
+                </div>
+
+                <!-- BOTÕES DA SOPA -->
+                <div class="sopa-actions">
+                  <button type="button" class="btn-sopa-abrir" id="btnAbrirSopa">🧩 ABRIR SOPA</button>
+                  <button type="button" class="btn-sopa-check" id="btnConferirSopa">✅ CONFERIR</button>
+                  <button type="button" class="btn-sopa-reset" id="btnResetarSopa">♻ REINICIAR SOPA</button>
+                </div>
+
+                <!-- MENSAGEM DA SOPA -->
+                <div id="soupInlineMsg">
+                  Leia as pistas, abra a sopa e complete o texto.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </section>
+<!-- =======================================================
+     PÁGINA 3 — HOTSPOT: EL MATERIAL ESCOLAR
+     -------------------------------------------------------
+     ESTA PÁGINA É SEMELHANTE À PÁGINA 1.
+     ELA TEM:
+     - CABEÇALHO
+     - IMAGEM
+     - CAMADA DE HOTSPOTS
+     - MODAL PRÓPRIO
+======================================================= -->
+<section class="page">
+  <div class="content">
+
+    <!-- CABEÇALHO DA PÁGINA 3 -->
+    <div class="titleRow">
+      <div></div>
+      <div class="centerTitle">EL MATERIAL ESCOLAR</div>
+      <div class="bncc">BNCC: EF06LI, EF07LI</div>
+    </div>
+
+    <div class="bars">
+      <div class="bar"></div>
+      <div style="width:16px"></div>
+      <div class="bar"></div>
+    </div>
+
+    <!-- ÁREA PRINCIPAL DO HOTSPOT -->
+    <section id="pagina3">
+
+      <div class="hotspot-page">
+        <div class="hotspot-header">
+          <h2 class="hotspot-title">EL MATERIAL ESCOLAR</h2>
+          <p class="hotspot-subtitle">
+            Clique nos materiais da imagem para abrir a explicação.
+          </p>
+        </div>
+
+        <div class="hotspot-card">
+          <div class="hotspot-stage" id="hotspotStage3">
+
+            <!-- TROQUE O NOME SE O ARQUIVO TIVER OUTRO NOME -->
+            <img
+              src="material-escolar.jpg"
+              alt="El material escolar"
+              class="hotspot-image"
+              id="hotspotImage3"
+            >
+
+            <!-- CAMADA DOS HOTSPOTS DA PÁGINA 3 -->
+            <div class="hotspot-layer" id="hotspotLayer3"></div>
+
+          </div>
+          <button type="button" id="btnFinalizarHotspot3" class="ctrlBtn blue" style="width:100%; margin-top:10px; color:#fff;">
+            ✅ FINALIZAR PÁGINA 3
+          </button>
+          <div id="hotspotMsg3" style="margin-top:8px; padding:10px; border-radius:10px; background:#eee; font-weight:700; font-size:10pt; line-height:1.35; color:#222; text-align:center;">
+            Clique nos materiais da imagem. Depois finalize esta página.
+          </div>
+        </div>
+      </div>
+
+      <!-- MODAL PRÓPRIO DA PÁGINA 3 -->
+      <div class="hm-modal" id="hmModal3" aria-hidden="true">
+        <div class="hm-modal-overlay" id="hmModalOverlay3"></div>
+
+        <div
+          class="hm-modal-box"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="hmModalTitle3"
+          aria-describedby="hmModalText3"
+        >
+          <div class="hm-modal-top">
+            <h3 id="hmModalTitle3" class="hm-modal-title">Palavra</h3>
+
+            <button
+              type="button"
+              class="hm-close-btn"
+              id="hmCloseBtn3"
+              aria-label="Fechar explicação"
+            >
+              ×
+            </button>
+          </div>
+
+          <div class="hm-modal-content">
+            <p id="hmModalText3" class="hm-modal-text"></p>
+          </div>
+
+          <div class="hm-modal-footer">
+            <button type="button" class="hm-action-btn" id="hmCloseBtnFooter3">
+              FECHAR
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</section>
+<!-- =======================================================
+     PÁGINA 4 — ORDENA LAS PALABRAS (MATERIAL ESCOLAR)
+     -------------------------------------------------------
+     ESTA PÁGINA REPETE A MESMA LÓGICA DA PÁGINA 2,
+     MAS AGORA COM O TEMA MATERIAL ESCOLAR.
+======================================================= -->
+<section class="page">
+  <div class="content">
+
+    <!-- CABEÇALHO DA PÁGINA 4 -->
+    <div class="titleRow">
+      <div></div>
+      <div class="centerTitle">ORDENA LAS PALABRAS — MATERIAL ESCOLAR</div>
+      <div class="bncc">BNCC: EF06LI, EF07LI</div>
+    </div>
+
+    <div class="bars">
+      <div class="bar"></div>
+      <div style="width:16px"></div>
+      <div class="bar"></div>
+    </div>
+
+    <section id="pagina-jogo4">
+      <div class="cols">
+
+        <!-- =================================================
+             COLUNA ESQUERDA — JOGO PRINCIPAL
+        ================================================== -->
+        <div class="coluna-esquerda">
+
+          <!-- APRESENTAÇÃO -->
+          <div class="card-padrao topo-card">
+            <h2 class="titulo-jogo">ORDENA LAS PALABRAS</h2>
+            <p class="subtitulo-jogo">
+              Observe a imagem do material escolar, leia a palavra embaralhada
+              e escreva a forma correta em espanhol.
+              <strong>Atenção:</strong> se errar, o jogo volta para o início.
+            </p>
+          </div>
+
+          <!-- CARD PRINCIPAL DO JOGO -->
+          <div class="card-padrao card-jogo" id="cardJogo4">
+            <div class="area-imagem">
+              <img id="imgAtividade4" src="" alt="Material escolar em espanhol">
+            </div>
+
+            <div class="bloco-embaralhada">
+              <span class="rotulo-bloco">PALAVRA EMBARALHADA</span>
+              <div class="palavra-embaralhada" id="palavraEmbaralhada4">--------</div>
+            </div>
+
+            <div class="bloco-resposta">
+              <label for="respostaAluno4" class="rotulo-resposta">ESCREVA A PALAVRA CORRETA</label>
+              <input id="respostaAluno4" type="text" placeholder="Digite aqui..." autocomplete="off">
+            </div>
+
+            <div class="linha-botoes">
+              <button id="btnVerificar4" type="button">VERIFICAR</button>
+              <button id="btnReiniciar4" type="button">REINICIAR</button>
+            </div>
+
+            <div id="feedback4">Clique em VERIFICAR para validar sua resposta.</div>
+          </div>
+
+          <!-- PROGRESSO -->
+          <div class="card-padrao">
+            <div class="titulo-lateral">PROGRESSO</div>
+            <div class="linha-progresso-texto">
+              <span>Etapa atual</span>
+              <strong id="progressoTexto4">1 / 15</strong>
+            </div>
+            <div class="barra-progresso">
+              <div id="barraInterna4"></div>
+            </div>
+          </div>
+
+          <!-- LISTA DE ACERTOS -->
+          <div class="card-padrao">
+            <div class="titulo-lateral">CONCLUÍDAS</div>
+            <div id="listaAcertos4">Nenhuma palavra acertada ainda.</div>
+          </div>
+
+          <!-- CARD FINAL -->
+          <div class="card-padrao card-final" id="cardFinal4" hidden>
+            <h3 style="margin-top:0;">¡MUY BIEN!</h3>
+            <p>Você concluiu todas as palavras do material escolar com sucesso.</p>
+            <button id="btnJogarNovamente4" type="button">JOGAR NOVAMENTE</button>
+          </div>
+
+        </div>
+
+       <!-- =================================================
+     COLUNA DIREITA — COMANDO DO JOGO DA MEMÓRIA
+================================================== -->
+<div class="coluna-direita">
+
+  <div class="card-padrao">
+    <div class="titulo-lateral">DESAFIO EXTRA — JOGO DA MEMÓRIA</div>
+
+    <p style="font-size:10pt; line-height:1.45; margin:0 0 8px 0; text-align:center;">
+      Clique no botão abaixo para abrir o jogo da memória
+      com o vocabulário de material escolar em espanhol.
+    </p>
+
+    <div style="display:flex; justify-content:center;">
+      <button
+        type="button"
+        id="btnAbrirMemoria4"
+        class="ctrlBtn blue"
+        style="min-width:220px;"
+      >
+        🧠 ABRIR JOGO DA MEMÓRIA
+      </button>
+    </div>
+
+    <div
+      id="memoriaMsg4"
+      style="margin-top:10px; padding:10px; border-radius:10px; background:#eee; font-weight:700; font-size:10pt; line-height:1.35; color:#222;"
+    >
+      Abra o jogo e encontre todos os pares corretos. O sistema registrará somente no final do jogo.
+    </div>
+  </div>
+
+</div>
+<!-- =================================================
+     MODAL DO JOGO DA MEMÓRIA — PÁGINA 4
+================================================== -->
+<div class="hm-modal" id="memoriaModal4" aria-hidden="true">
+  <div class="hm-modal-overlay" id="memoriaOverlay4"></div>
+
+  <div
+    class="hm-modal-box memoria-modal-box"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="memoriaModalTitle4"
+  >
+    <div class="hm-modal-top">
+      <h3 id="memoriaModalTitle4" class="hm-modal-title">JOGO DA MEMÓRIA — MATERIAL ESCOLAR</h3>
+      <button
+        type="button"
+        class="hm-close-btn"
+        id="memoriaCloseBtn4"
+        aria-label="Fechar jogo da memória"
+      >×</button>
+    </div>
+
+    <div class="memoria-iframe-wrap">
+      <iframe
+        id="memoriaFrame4"
+        src="memoria_jogo.html"
+        title="Jogo da memória em espanhol"
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    <div class="hm-modal-footer">
+      <button type="button" class="hm-action-btn" id="memoriaCloseBtnFooter4">FECHAR</button>
+    </div>
+  </div>
+</div>
+    </section>
+
+  </div>
+</section>
+<!-- =======================================================
+     PÁGINA 5 — GENIALLY EM DUAS COLUNAS
+     -------------------------------------------------------
+     COLUNA ESQUERDA  = LINK 1
+     COLUNA DIREITA   = LINK 2
+======================================================= -->
+<section class="page">
+  <div class="content">
+
+    <!-- CABEÇALHO DA PÁGINA 5 -->
+    <div class="titleRow">
+      <div></div>
+      <div class="centerTitle">ACTIVIDADES INTERACTIVAS</div>
+      <div class="bncc">BNCC: EF06LI, EF07LI</div>
+    </div>
+
+    <div class="bars">
+      <div class="bar"></div>
+      <div style="width:16px"></div>
+      <div class="bar"></div>
+    </div>
+
+    <section id="pagina5-links">
+      <div class="cols">
+
+        <!-- =================================================
+             COLUNA ESQUERDA — GENIALLY 1
+        ================================================== -->
+        <div class="coluna-esquerda">
+          <div class="card-padrao card-topo-link">
+            <h2 class="titulo-link">ACTIVIDAD 1</h2>
+            <p class="subtitulo-link">
+              Recurso interativo aberto diretamente na página.
+            </p>
+          </div>
+
+          <div class="genially-box">
+            <div class="genially-head">GENIALLY 1</div>
+            <iframe
+              class="genially-frame"
+              src="https://view.genially.com/6148b528b4fe3b0de361aeab"
+              title="Genially 1"
+              loading="lazy"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- =================================================
+             COLUNA DIREITA — GENIALLY 2
+        ================================================== -->
+        <div class="coluna-direita">
+          <div class="card-padrao card-topo-link">
+            <h2 class="titulo-link">ACTIVIDAD 2</h2>
+            <p class="subtitulo-link">
+              Segundo recurso interativo aberto diretamente na página.
+            </p>
+          </div>
+
+          <div class="genially-box">
+            <div class="genially-head">GENIALLY 2</div>
+            <iframe
+              class="genially-frame"
+              src="https://view.genially.com/6148bb08465b2b0df50f396c"
+              title="Genially 2"
+              loading="lazy"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+<!-- =======================================================
+     BLOCO EXTRA — JOGO DE ESCUTA COM CORTINA DE PIXELS
+======================================================= -->
+<section id="pagina5-audio-game">
+  <div class="audio-game-card">
+    <h2 class="audio-game-title">ESCUCHA Y RELACIONA</h2>
+    <p class="audio-game-subtitle">
+      Ouça o áudio em espanhol, observe rapidamente as traduções reveladas
+      no canvas e escolha a tradução correta. Se errar, o jogo volta ao início.
+    </p>
+
+    <div class="audio-game-actions">
+      <button type="button" id="btnAbrirAudioGame5" class="ctrlBtn blue">
+        🎧 ABRIR JOGO DE ESCUTA
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- =======================================================
+     MODAL — JOGO DE ESCUTA COM CANVAS
+======================================================= -->
+<div class="hm-modal" id="audioGameModal5" aria-hidden="true">
+  <div class="hm-modal-overlay" id="audioGameOverlay5"></div>
+
+  <div
+    class="hm-modal-box audio-game-modal-box"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="audioGameModalTitle5"
+  >
+    <div class="hm-modal-top">
+      <h3 id="audioGameModalTitle5" class="hm-modal-title">
+        JUEGO DE ESCUCHA — FRASES ÚTILES
+      </h3>
+      <button
+        type="button"
+        class="hm-close-btn"
+        id="audioGameCloseBtn5"
+        aria-label="Fechar jogo de escuta"
+      >×</button>
+    </div>
+
+    <div class="audio-game-wrap">
+      <!-- LADO ESQUERDO: CANVAS -->
+      <div class="audio-game-left">
+        <div class="audio-stage" id="audioStage5">
+          <canvas id="audioPhraseCanvas5" width="960" height="600"></canvas>
+          <canvas id="audioPixelCurtain5" class="audio-stage-overlay" width="960" height="600"></canvas>
+        </div>
+      </div>
+
+      <!-- LADO DIREITO: CONTROLES -->
+      <div class="audio-game-right">
+        <div class="audio-game-panel">
+          <h4 class="audio-panel-title">CONTROLE DO DESAFIO</h4>
+
+          <div class="audio-step-line">
+            <span>Rodada atual</span>
+            <strong id="audioStepText5">1 / 10</strong>
+          </div>
+
+          <div class="audio-progress">
+            <div id="audioProgressFill5"></div>
+          </div>
+
+          <div class="audio-controls">
+            <button type="button" id="btnPlayAudio5">▶ TOCAR ÁUDIO</button>
+            <button type="button" id="btnRestartAudioGame5">↺ REINICIAR</button>
+          </div>
+
+          <div style="margin-top:12px; font-size:10pt; font-weight:900; color:#4a148c;">
+            ESCOLHA A TRADUÇÃO CORRETA:
+          </div>
+
+          <div class="audio-answer-list" id="audioAnswerList5"></div>
+
+          <div id="audioGameFeedback5">
+            Clique em TOCAR ÁUDIO para iniciar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hm-modal-footer">
+      <button type="button" class="hm-action-btn" id="audioGameCloseBtnFooter5">FECHAR</button>
+    </div>
+  </div>
+</div>
+  </div>
+</section>
+<!-- BOTÃO DE CERTIFICADO (ÚLTIMA PÁGINA) -->
+<button id="btnCert" data-ready="0" disabled aria-disabled="true" style="
+  margin-top:20px;
+  width:100%;
+  min-height:50px;
+  border:none;
+  border-radius:12px;
+  background:#2ecc71;
+  color:#fff;
+  font-weight:900;
+  font-size:14pt;
+  cursor:pointer;
+">
+  ✅ CONFERIR E GERAR CERTIFICADO ANTIFRAUDE
+</button>
+  </main>
+
+  <!-- =========================================================
+       MODAL GLOBAL DA SOPA
+       ---------------------------------------------------------
+       FICA FORA DAS PÁGINAS PARA ABRIR POR CIMA DE TUDO.
+  ========================================================== -->
+  <div id="soupOverlay">
+    <div id="soupModalCard">
+      <div id="soupModalInner">
+
+        <div class="soupModalHead">
+          <div>
+            <div class="titulo-jogo" style="text-align:left; margin:0;">
+              SOPA DE LETRAS — CALENDARIO EN ESPAÑOL
+            </div>
+            <div class="soupModalSubtitle">
+              Clique nas letras em linha reta. Pode ser na horizontal, vertical ou diagonal.
+              Depois clique em <strong>VALIDAR PALAVRA</strong>.
+            </div>
+          </div>
+
+          <button type="button" class="ctrlBtn violet" id="btnFecharSopaTop">FECHAR ✖</button>
+        </div>
+
+        <div style="margin:8px 0 6px 0; font-size:10pt;">
+          <b>Palavras para encontrar:</b>
+        </div>
+
+        <div id="soupWordListModal"></div>
+
+        <div id="soupWrapModal">
+          <div id="soupGrid" class="soupGrid"></div>
+        </div>
+
+        <div class="soupControls">
+          <button type="button" class="ctrlBtn blue" id="btnValidarSelecao">✅ VALIDAR PALAVRA</button>
+          <button type="button" class="ctrlBtn red" id="btnLimparSelecao">🧹 LIMPAR SELEÇÃO</button>
+          <button type="button" class="ctrlBtn violet" id="btnVoltarTexto">↩ VOLTAR AO TEXTO</button>
+        </div>
+
+        <div id="soupModalMsg">
+          Encontre as palavras e complete o texto.
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+/* =========================================================
+   ESTADO GLOBAL DO CERTIFICADO
+   ---------------------------------------------------------
+   CADA CHAVE REPRESENTA UMA ATIVIDADE QUE PRECISA SER
+   CONCLUÍDA PARA LIBERAR O CERTIFICADO.
+========================================================= */
+const state = {
+  done: {
+    a1: false,
+    a2: false,
+    a3: false,
+    a4: false,
+    a5: false,
+    a6: false,
+    a7: false
+  }
+};
+
+function loadSavedProgress(){
+  try{
+    const saved = JSON.parse(localStorage.getItem("falange_aula12_progress_v7_trava_absoluta_20260614") || "{}");
+    Object.keys(state.done).forEach(k => {
+      if(saved[k] === true) state.done[k] = true;
+    });
+  }catch(e){}
+}
+
+function saveProgress(){
+  try{ localStorage.setItem("falange_aula12_progress_v7_trava_absoluta_20260614", JSON.stringify(state.done)); }catch(e){}
+}
+
+function markDone(key, messageId, messageText){
+  if(!state.done[key]){
+    state.done[key] = true;
+    saveProgress();
+  }
+  if(messageId){
+    const box = document.getElementById(messageId);
+    if(box){
+      box.textContent = messageText || "✅ Atividade concluída.";
+      box.style.background = "#d4edda";
+      box.style.color = "#155724";
+      box.style.border = "1px solid #c3e6cb";
+    }
+  }
+  updateCertButton();
+}
+
+function smartAutoDetectCompletion(){
+  /* Detecta conclusões que já aparecem visualmente na tela. Isso evita falha em navegadores que não disparam algum evento. */
+  const cardFinal = document.getElementById("cardFinal");
+  if(cardFinal && !cardFinal.hidden) markDone("a2");
+
+  const soupDone = document.querySelectorAll("#soupWordList .soupChip.done").length;
+  if(soupDone >= 9) markDone("a3");
+
+  const cardFinal4 = document.getElementById("cardFinal4");
+  if(cardFinal4 && !cardFinal4.hidden) markDone("a4");
+
+  const audioFill = document.getElementById("audioProgressFill5");
+  const audioFeedback = document.getElementById("audioGameFeedback5");
+  if((audioFill && String(audioFill.style.width).includes("100")) || (audioFeedback && /excelente|concluiu/i.test(audioFeedback.textContent || ""))){
+    markDone("a5");
+  }
+
+  const memoriaMsg = document.getElementById("memoriaMsg4");
+  const memoriaTexto = memoriaMsg ? (memoriaMsg.textContent || "") : "";
+  if(
+    memoriaMsg &&
+    memoriaMsg.dataset.memoriaCompleta === "1" &&
+    /Jogo da memória concluído automaticamente/i.test(memoriaTexto)
+  ){
+    markDone("a7");
+  }
+}
+
+function allActivitiesDone(){
+  smartAutoDetectCompletion();
+  return !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && state.done.a7);
+}
+
+function updateCertButton(){
+  const btn = document.getElementById("btnCert");
+  if(!btn) return;
+  saveProgress();
+  const allDone = !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && state.done.a7);
+  btn.dataset.ready = allDone ? "1" : "0";
+  btn.disabled = !allDone;
+  btn.textContent = allDone ? "🎓 GERAR CERTIFICADO ANTIFRAUDE" : "🔒 CERTIFICADO BLOQUEADO — CONCLUA TODAS AS ATIVIDADES";
+  btn.style.cursor = allDone ? "pointer" : "not-allowed";
+  btn.style.opacity = allDone ? "1" : ".62";
+  btn.style.filter = allDone ? "none" : "grayscale(.25) saturate(.8)";
+}
+
+function tryFinishAll(){
+  smartAutoDetectCompletion();
+  const missing = [];
+
+  if(!state.done.a1) missing.push("Página 1 — finalize a leitura dos hotspots");
+  if(!state.done.a2) missing.push("Página 2 — ordena las palabras");
+  if(!state.done.a3) missing.push("Página 2 — sopa de letras");
+  if(!state.done.a4) missing.push("Página 4 — ordena las palabras");
+  if(!state.done.a5) missing.push("Página 5 — jogo de escuta");
+  if(!state.done.a6) missing.push("Página 3 — finalize a leitura dos hotspots");
+  if(!state.done.a7) missing.push("Página 4 — jogo da memória");
+
+  if(missing.length){
+    alert("Ainda falta concluir:\n\n" + missing.join("\n") + "\n\nFinalize somente as páginas permitidas e complete o jogo da memória até o fim. O certificado só abre quando tudo estiver concluído.");
+    return;
+  }
+
+  openCert();
+}
+
+loadSavedProgress();
+setTimeout(updateCertButton, 0);
+
+    /* =========================================================
+       MAPA GERAL DO JAVASCRIPT
+       ---------------------------------------------------------
+       1. FUNÇÕES UTILITÁRIAS
+       2. INÍCIO DA AULA / REGISTRO
+       3. HOTSPOT
+       4. JOGO ORDENA LAS PALABRAS
+       5. SOPA DE LETRAS
+    ========================================================== */
+
+    /* =========================================================
+       1) FUNÇÕES UTILITÁRIAS
+       ---------------------------------------------------------
+       normalizeText = normaliza texto para comparação
+       setMessage    = atualiza caixas de feedback
+    ========================================================== */
+    function normalizeText(value){
+      return (value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ñ/g, "n")
+        .replace(/Ñ/g, "N")
+        .trim()
+        .toLowerCase();
+    }
+
+    function setMessage(el, text, type){
+      if(!el) return;
+      el.textContent = text;
+      el.classList.remove("ok", "erro");
+
+      if(type === "ok") el.classList.add("ok");
+      if(type === "erro") el.classList.add("erro");
+    }
+
+    /* =========================================================
+       2) SCRIPT DE ENTRADA NA AULA
+       ---------------------------------------------------------
+       O ALUNO PREENCHE O REGISTRO E CLICA EM INICIAR.
+       O SCRIPT:
+       - valida campos
+       - esconde o registro
+       - mostra a apostila
+    ========================================================== */
+    (function(){
+      const btn = document.getElementById("startLessonBtn");
+      const register = document.getElementById("studentRegister");
+      const wrap = document.getElementById("mainWrap");
+
+      btn.addEventListener("click", function(){
+        const name = document.getElementById("studentName").value.trim();
+        const school = document.getElementById("studentSchool").value.trim();
+        const turma = document.getElementById("studentClass").value.trim();
+
+        if(!name || !school || !turma){
+          alert("Preencha nome, escola e turma para iniciar.");
+          return;
+        }
+
+        const certStudent = document.getElementById("certStudent");
+        const certName = document.getElementById("certName");
+        const certClass = document.getElementById("certClass");
+        const certSchool = document.getElementById("certSchool");
+
+        if(certStudent) certStudent.textContent = name;
+        if(certName) certName.textContent = name;
+        if(certClass) certClass.textContent = turma;
+        if(certSchool) certSchool.textContent = school;
+
+        register.style.display = "none";
+        wrap.style.display = "flex";
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      });
+    })();
+
+    /* =========================================================
+       3) HOTSPOT
+       ---------------------------------------------------------
+       RESPONSÁVEL POR:
+       - criar as áreas clicáveis
+       - abrir o modal
+       - fechar o modal
+    ========================================================== */
+    (function(){
+      const hotspotLayer = document.getElementById("hotspotLayer");
+      const modal = document.getElementById("hmModal");
+      const modalOverlay = document.getElementById("hmModalOverlay");
+      const modalTitle = document.getElementById("hmModalTitle");
+      const modalText = document.getElementById("hmModalText");
+      const closeBtn = document.getElementById("hmCloseBtn");
+      const closeBtnFooter = document.getElementById("hmCloseBtnFooter");
+
+      /* =======================================================
+         TEXTO EXPLICATIVO DE CADA PALAVRA
+      ======================================================= */
+      const hotspotContent = {
+        "el lunes": "EL LUNES = segunda-feira.\n\nÉ um dia da semana em espanhol.\nExemplo: Hoy es lunes.",
+        "el martes": "EL MARTES = terça-feira.\n\nExemplo: Tengo clase el martes.",
+        "el miércoles": "EL MIÉRCOLES = quarta-feira.\n\nA palavra leva acento.\nExemplo: El miércoles estudio español.",
+        "el jueves": "EL JUEVES = quinta-feira.\n\nExemplo: El jueves hay tarea.",
+        "el viernes": "EL VIERNES = sexta-feira.\n\nExemplo: El viernes salgo temprano.",
+        "el sábado": "EL SÁBADO = sábado.\n\nA palavra leva acento.\nExemplo: El sábado descanso.",
+        "el domingo": "EL DOMINGO = domingo.\n\nExemplo: El domingo visito a mi familia.",
+        "anteayer": "ANTEAYER = anteontem.\n\nIndica o dia antes de ontem.",
+        "ayer": "AYER = ontem.\n\nExemplo: Ayer estudié mucho.",
+        "hoy": "HOY = hoje.\n\nExemplo: Hoy es un buen día.",
+        "mañana": "MAÑANA = amanhã.\n\nPode indicar o próximo dia.",
+        "pasado mañana": "PASADO MAÑANA = depois de amanhã.",
+        "el fin de semana": "EL FIN DE SEMANA = fim de semana.\n\nNormalmente sábado e domingo.",
+        "enero": "ENERO = janeiro.\n\nÉ o primeiro mês do ano.",
+        "febrero": "FEBRERO = fevereiro.\n\nÉ o segundo mês do ano.",
+        "marzo": "MARZO = março.\n\nÉ o terceiro mês do ano.",
+        "abril": "ABRIL = abril.",
+        "mayo": "MAYO = maio.",
+        "junio": "JUNIO = junho.",
+        "julio": "JULIO = julho.",
+        "agosto": "AGOSTO = agosto.",
+        "septiembre": "SEPTIEMBRE = setembro.",
+        "octubre": "OCTUBRE = outubro.",
+        "noviembre": "NOVIEMBRE = novembro.",
+        "diciembre": "DICIEMBRE = dezembro.",
+        "el invierno": "EL INVIERNO = inverno.\n\nÉ a estação mais fria do ano.",
+        "la primavera": "LA PRIMAVERA = primavera.\n\nEstação associada às flores.",
+        "el verano": "EL VERANO = verão.\n\nÉ a estação mais quente do ano.",
+        "el otoño": "EL OTOÑO = outono.\n\nÉ a estação em que muitas folhas caem.",
+        "los días de la semana": "LOS DÍAS DE LA SEMANA = os dias da semana.",
+        "meses del año": "MESES DEL AÑO = meses do ano.",
+        "estaciones del año": "ESTACIONES DEL AÑO = estações do ano."
+      };
+
+      /* =======================================================
+         COORDENADAS DOS HOTSPOTS
+         -------------------------------------------------------
+         CADA ITEM DEFINE UMA ÁREA CLICÁVEL SOBRE A IMAGEM.
+      ======================================================= */
+      const hotspots = [
+        { key:"los días de la semana", left:5.2, top:10.1, width:43.5, height:4.8 },
+        { key:"meses del año", left:51.2, top:47.4, width:43.0, height:4.0 },
+        { key:"estaciones del año", left:3.0, top:61.2, width:43.0, height:4.0 },
+
+        { key:"el lunes", left:3.6, top:18.6, width:14.9, height:3.2 },
+        { key:"el martes", left:19.5, top:18.6, width:15.0, height:3.2 },
+        { key:"el miércoles", left:35.1, top:18.6, width:15.6, height:3.2 },
+        { key:"el jueves", left:51.1, top:18.6, width:14.0, height:3.2 },
+        { key:"el viernes", left:66.3, top:18.6, width:15.0, height:3.2 },
+        { key:"el sábado", left:83.0, top:18.6, width:13.2, height:3.2 },
+        { key:"el domingo", left:82.2, top:25.7, width:15.4, height:3.2 },
+
+        { key:"anteayer", left:3.2, top:39.2, width:16.0, height:6.0 },
+        { key:"ayer", left:21.8, top:39.2, width:10.5, height:6.0 },
+        { key:"hoy", left:37.4, top:39.2, width:10.2, height:6.0 },
+        { key:"mañana", left:51.9, top:39.2, width:14.2, height:6.0 },
+        { key:"pasado mañana", left:68.5, top:38.7, width:13.0, height:7.0 },
+        { key:"el fin de semana", left:84.0, top:38.4, width:13.0, height:7.5 },
+
+        { key:"enero", left:52.2, top:52.5, width:11.8, height:8.8 },
+        { key:"febrero", left:67.8, top:52.5, width:12.0, height:8.8 },
+        { key:"marzo", left:82.8, top:52.5, width:12.0, height:8.8 },
+
+        { key:"abril", left:52.2, top:64.0, width:11.8, height:9.0 },
+        { key:"mayo", left:67.8, top:64.0, width:12.0, height:9.0 },
+        { key:"junio", left:82.8, top:64.0, width:12.0, height:9.0 },
+
+        { key:"julio", left:52.2, top:75.8, width:11.8, height:9.0 },
+        { key:"agosto", left:67.8, top:75.8, width:12.0, height:9.0 },
+        { key:"septiembre", left:82.8, top:75.8, width:12.0, height:9.0 },
+
+        { key:"octubre", left:52.2, top:88.0, width:11.8, height:8.6 },
+        { key:"noviembre", left:67.8, top:88.0, width:12.0, height:8.6 },
+        { key:"diciembre", left:82.8, top:88.0, width:12.0, height:8.6 },
+
+        { key:"el invierno", left:3.2, top:78.4, width:20.2, height:3.0 },
+        { key:"la primavera", left:24.6, top:78.4, width:20.2, height:3.0 },
+        { key:"el verano", left:3.2, top:96.1, width:20.2, height:3.0 },
+        { key:"el otoño", left:24.6, top:96.1, width:20.2, height:3.0 }
+      ];
+
+      /* =======================================================
+         ABRE O MODAL DO HOTSPOT
+      ======================================================= */
+const viewedHotspots = new Set();
+const totalHotspots = Object.keys(hotspotContent).length;
+      function openModal(wordKey){
+  viewedHotspots.add(wordKey);
+
+  if(viewedHotspots.size === totalHotspots){
+    markDone("a1", "hotspotMsg1", "✅ Página 1 concluída.");
+  }
+
+  modalTitle.textContent = wordKey.toUpperCase();
+  modalText.textContent = hotspotContent[wordKey] || "Sem explicação cadastrada.";
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+      /* =======================================================
+         FECHA O MODAL DO HOTSPOT
+      ======================================================= */
+      function closeModal(){
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      /* =======================================================
+         CRIA OS HOTSPOTS NA CAMADA DA IMAGEM
+      ======================================================= */
+      hotspots.forEach(function(item){
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "word-hotspot";
+        btn.setAttribute("aria-label", "Abrir explicação de " + item.key);
+        btn.setAttribute("title", item.key);
+
+        btn.style.left = item.left + "%";
+        btn.style.top = item.top + "%";
+        btn.style.width = item.width + "%";
+        btn.style.height = item.height + "%";
+
+        btn.addEventListener("click", function(){
+          openModal(item.key);
+        });
+
+        hotspotLayer.appendChild(btn);
+      });
+
+      /* =======================================================
+         EVENTOS DE FECHAR
+      ======================================================= */
+      closeBtn.addEventListener("click", closeModal);
+      closeBtnFooter.addEventListener("click", closeModal);
+      modalOverlay.addEventListener("click", closeModal);
+
+      document.addEventListener("keydown", function(event){
+        if(event.key === "Escape" && modal.classList.contains("is-open")){
+          closeModal();
+        }
+      });
+    })();
+/* =========================================================
+   3B) HOTSPOT — PÁGINA 3
+   ---------------------------------------------------------
+   RESPONSÁVEL POR:
+   - criar os hotspots da imagem "El material escolar"
+   - abrir o modal da página 3
+   - fechar o modal da página 3
+========================================================= */
+(function(){
+  /* =======================================================
+     ELEMENTOS PRINCIPAIS DA PÁGINA 3
+  ======================================================= */
+  const hotspotLayer3 = document.getElementById("hotspotLayer3");
+  const modal3 = document.getElementById("hmModal3");
+  const modalOverlay3 = document.getElementById("hmModalOverlay3");
+  const modalTitle3 = document.getElementById("hmModalTitle3");
+  const modalText3 = document.getElementById("hmModalText3");
+  const closeBtn3 = document.getElementById("hmCloseBtn3");
+  const closeBtnFooter3 = document.getElementById("hmCloseBtnFooter3");
+
+  /* =======================================================
+     SEGURANÇA
+     -------------------------------------------------------
+     SE A PÁGINA 3 AINDA NÃO EXISTIR NO HTML,
+     O SCRIPT NÃO QUEBRA O RESTANTE DO ARQUIVO.
+  ======================================================= */
+  if(
+    !hotspotLayer3 ||
+    !modal3 ||
+    !modalOverlay3 ||
+    !modalTitle3 ||
+    !modalText3 ||
+    !closeBtn3 ||
+    !closeBtnFooter3
+  ){
+    return;
+  }
+
+  /* =======================================================
+     CONTEÚDO EXPLICATIVO DOS HOTSPOTS
+     -------------------------------------------------------
+     AQUI FICA O TEXTO QUE VAI APARECER NO MODAL.
+  ======================================================= */
+  const hotspotContent3 = {
+    "el lapicero / el lápiz":
+      "EL LAPICERO / EL LÁPIZ = lápis.\n\nUsado para escrever, desenhar e fazer atividades escolares.",
+
+    "el bolígrafo / el boli":
+      "EL BOLÍGRAFO / EL BOLI = caneta.\n\nUsado para escrever com tinta.\n'Boli' é uma forma mais curta e informal.",
+
+    "el subrayador / el marcador / el resaltador":
+      "EL SUBRAYADOR / EL MARCADOR / EL RESALTADOR = marca-texto.\n\nServe para destacar palavras ou partes importantes do texto.",
+
+    "el sacapuntas":
+      "EL SACAPUNTAS = apontador.\n\nUsado para apontar o lápis.",
+
+    "la goma (de borrar)":
+      "LA GOMA (DE BORRAR) = borracha.\n\nUsada para apagar o que foi escrito a lápis.",
+
+    "las tijeras":
+      "LAS TIJERAS = tesoura.\n\nUsada para cortar papel e outros materiais.",
+
+    "el estuche":
+      "EL ESTUCHE = estojo.\n\nServe para guardar lápis, canetas, borracha e outros materiais escolares.",
+
+    "la calculadora":
+      "LA CALCULADORA = calculadora.\n\nUsada para fazer cálculos matemáticos.",
+
+    "la regla":
+      "LA REGLA = régua.\n\nUsada para medir ou traçar linhas retas.",
+
+    "la mochila":
+      "LA MOCHILA = mochila.\n\nUsada para levar os materiais da escola.",
+
+    "el ordenador / la computadora":
+      "EL ORDENADOR / LA COMPUTADORA = computador.\n\n'Ordenador' é mais usado na Espanha.\n'Computadora' é muito usado na América Latina.",
+
+    "la pizarra / el pizarrón":
+      "LA PIZARRA / EL PIZARRÓN = quadro.\n\nUsado pelo professor para escrever o conteúdo da aula.",
+
+    "la agenda":
+      "LA AGENDA = agenda.\n\nServe para anotar compromissos, tarefas e datas importantes.",
+
+    "el cuaderno / la libreta":
+      "EL CUADERNO / LA LIBRETA = caderno.\n\nUsado para fazer anotações e atividades.",
+
+    "el libro":
+      "EL LIBRO = livro.\n\nUsado para leitura e estudo."
+  };
+
+  /* =======================================================
+     COORDENADAS DOS HOTSPOTS DA IMAGEM
+     -------------------------------------------------------
+     ESTES VALORES FORAM AJUSTADOS PARA ESTA IMAGEM.
+     SE QUISER, DEPOIS A GENTE REFINA MILIMETRICAMENTE.
+  ======================================================= */
+  const hotspots3 = [
+  /* 1ª LINHA */
+  { key:"el lapicero / el lápiz", left:3.0, top:8.4, width:19.6, height:18.2 },
+  { key:"el bolígrafo / el boli", left:23.4, top:8.2, width:28.8, height:18.4 },
+  { key:"el subrayador / el marcador / el resaltador", left:52.6, top:8.2, width:24.4, height:18.4 },
+  { key:"el sacapuntas", left:77.4, top:8.0, width:19.4, height:18.6 },
+
+  /* 2ª LINHA */
+  { key:"la goma (de borrar)", left:3.0, top:26.7, width:22.9, height:16.9 },
+  { key:"las tijeras", left:26.6, top:26.5, width:19.6, height:17.0 },
+  { key:"el estuche", left:49.0, top:26.2, width:46.3, height:17.2 },
+
+  /* 3ª LINHA */
+  { key:"la calculadora", left:3.0, top:44.7, width:31.8, height:16.8 },
+  { key:"la regla", left:35.6, top:44.5, width:39.9, height:16.9 },
+  { key:"la mochila", left:76.2, top:44.2, width:20.4, height:17.4 },
+
+  /* 4ª LINHA */
+  { key:"el ordenador / la computadora", left:3.0, top:63.1, width:29.8, height:17.7 },
+  { key:"la pizarra / el pizarrón", left:34.2, top:62.8, width:38.8, height:17.9 },
+  { key:"la agenda", left:75.0, top:61.8, width:21.8, height:36.8 },
+
+  /* 5ª LINHA */
+  { key:"el cuaderno / la libreta", left:3.0, top:82.3, width:40.6, height:14.7 },
+  { key:"el libro", left:44.8, top:82.2, width:28.0, height:14.9 }
+];
+
+  /* =======================================================
+     ABRIR MODAL DA PÁGINA 3
+  ======================================================= */
+const viewedHotspots3 = new Set();
+const totalHotspots3 = Object.keys(hotspotContent3).length;  
+function openModal3(wordKey){
+  viewedHotspots3.add(wordKey);
+
+  if(viewedHotspots3.size === totalHotspots3){
+    state.done.a6 = true;
+    updateCertButton();
+  }
+
+  modalTitle3.textContent = wordKey.toUpperCase();
+  modalText3.textContent = hotspotContent3[wordKey] || "Sem explicação cadastrada.";
+  modal3.classList.add("is-open");
+  modal3.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+  /* =======================================================
+     FECHAR MODAL DA PÁGINA 3
+  ======================================================= */
+  function closeModal3(){
+    modal3.classList.remove("is-open");
+    modal3.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  /* =======================================================
+     CRIAR HOTSPOTS DA PÁGINA 3
+  ======================================================= */
+  hotspots3.forEach(function(item){
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "word-hotspot";
+    btn.setAttribute("aria-label", "Abrir explicação de " + item.key);
+    btn.setAttribute("title", item.key);
+
+    btn.style.left = item.left + "%";
+    btn.style.top = item.top + "%";
+    btn.style.width = item.width + "%";
+    btn.style.height = item.height + "%";
+
+    btn.addEventListener("click", function(){
+      openModal3(item.key);
+    });
+
+    hotspotLayer3.appendChild(btn);
+  });
+
+  /* =======================================================
+     EVENTOS DE FECHAR
+  ======================================================= */
+  closeBtn3.addEventListener("click", closeModal3);
+  closeBtnFooter3.addEventListener("click", closeModal3);
+  modalOverlay3.addEventListener("click", closeModal3);
+
+  document.addEventListener("keydown", function(event){
+    if(event.key === "Escape" && modal3.classList.contains("is-open")){
+      closeModal3();
+    }
+  });
+})();
+    /* =========================================================
+       4) JOGO — ORDENA LAS PALABRAS
+       ---------------------------------------------------------
+       O ALUNO PRECISA DESCOBRIR A PALAVRA CORRETA.
+       SE ERRAR, VOLTA PARA O INÍCIO.
+    ========================================================== */
+    (function() {
+      /* =======================================================
+         BANCO DE ATIVIDADES DO JOGO
+      ======================================================= */
+      const atividades = [
+        { img: "lunes.png", embaralhada: "selun", resposta: "lunes" },
+        { img: "martes.png", embaralhada: "tmsear", resposta: "martes" },
+        { img: "miercoles.png", embaralhada: "césmoielr", resposta: "miércoles" },
+        { img: "jueves.png", embaralhada: "jvusee", resposta: "jueves" },
+        { img: "viernes.png", embaralhada: "sevrein", resposta: "viernes" },
+        { img: "sabado.png", embaralhada: "ábsdoa", resposta: "sábado" },
+        { img: "febrero.png", embaralhada: "fberero", resposta: "febrero" },
+        { img: "junio.png", embaralhada: "ijnuo", resposta: "junio" },
+        { img: "julio.png", embaralhada: "ijluo", resposta: "julio" },
+        { img: "septiembre.png", embaralhada: "sepmtibeer", resposta: "septiembre" },
+        { img: "noviembre.png", embaralhada: "venmoiber", resposta: "noviembre" },
+        { img: "verano.png", embaralhada: "anervo", resposta: "verano" },
+        { img: "otono.png", embaralhada: "tñooo", resposta: "otoño" },
+        { img: "invierno.png", embaralhada: "inervnio", resposta: "invierno" }
+      ];
+
+      /* =======================================================
+         ELEMENTOS DA INTERFACE
+      ======================================================= */
+      const el = {
+        img: document.getElementById("imgAtividade"),
+        embaralhada: document.getElementById("palavraEmbaralhada"),
+        resposta: document.getElementById("respostaAluno"),
+        feedback: document.getElementById("feedback"),
+        progressoTxt: document.getElementById("progressoTexto"),
+        barra: document.getElementById("barraInterna"),
+        listaAcertos: document.getElementById("listaAcertos"),
+        cardJogo: document.getElementById("cardJogo"),
+        cardFinal: document.getElementById("cardFinal"),
+        btnVerificar: document.getElementById("btnVerificar"),
+        btnReiniciar: document.getElementById("btnReiniciar"),
+        btnNovo: document.getElementById("btnJogarNovamente")
+      };
+
+      /* =======================================================
+         ESTADO DO JOGO
+      ======================================================= */
+      let indice = 0;
+      let acertos = [];
+
+      /* =======================================================
+         ATUALIZA:
+         - texto do progresso
+         - barra de progresso
+         - lista de acertos
+      ======================================================= */
+      function atualizarInterface() {
+        const total = atividades.length;
+        const exibicaoIndice = Math.min(indice + 1, total);
+
+        el.progressoTxt.textContent = `${exibicaoIndice} / ${total}`;
+        el.barra.style.width = `${(indice / total) * 100}%`;
+
+        el.listaAcertos.innerHTML = acertos.length
+          ? acertos.map((val, i) => `<div>${i + 1}. ${val}</div>`).join("")
+          : "Nenhuma palavra acertada ainda.";
+updateCertButton();
+      }
+
+      /* =======================================================
+         CARREGA A ATIVIDADE ATUAL
+      ======================================================= */
+      function carregarAtividade() {
+        if (indice >= atividades.length) {
+          el.cardJogo.hidden = true;
+          el.cardFinal.hidden = false;
+          el.barra.style.width = "100%";
+          el.progressoTxt.textContent = `${atividades.length} / ${atividades.length}`;
+          return;
+        }
+
+        const atual = atividades[indice];
+        el.cardJogo.hidden = false;
+        el.cardFinal.hidden = true;
+
+        el.img.src = atual.img;
+        el.img.alt = "Imagem da palavra " + atual.resposta;
+        el.embaralhada.textContent = atual.embaralhada;
+        el.resposta.value = "";
+        el.resposta.focus();
+
+        setMessage(el.feedback, `Atividade ${indice + 1} de ${atividades.length}`, "");
+        atualizarInterface();
+      }
+
+      /* =======================================================
+         VERIFICA A RESPOSTA DIGITADA PELO ALUNO
+      ======================================================= */
+      function verificar() {
+        const atual = atividades[indice];
+        const userVal = normalizeText(el.resposta.value);
+        const correctVal = normalizeText(atual.resposta);
+
+        if (!userVal) {
+          setMessage(el.feedback, "Digite uma resposta antes de verificar.", "erro");
+          return;
+        }
+
+        if (userVal === correctVal) {
+          setMessage(el.feedback, `✅ Correto! A palavra é ${atual.resposta}.`, "ok");
+          acertos.push(atual.resposta);
+          indice++;
+          if (indice === atividades.length) markDone("a2");
+          atualizarInterface();
+          setTimeout(carregarAtividade, 700);
+        } else {
+          setMessage(el.feedback, "❌ Incorreto! Reiniciando o desafio...", "erro");
+          setTimeout(reiniciar, 1000);
+        }
+      }
+
+      /* =======================================================
+         REINICIA O JOGO COMPLETO
+      ======================================================= */
+      function reiniciar() {
+        indice = 0;
+        acertos = [];
+        carregarAtividade();
+      }
+
+      /* =======================================================
+         EVENTOS DO JOGO
+      ======================================================= */
+      el.btnVerificar.addEventListener("click", verificar);
+      el.btnReiniciar.addEventListener("click", reiniciar);
+      el.btnNovo.addEventListener("click", reiniciar);
+
+      el.resposta.addEventListener("keydown", function(e){
+        if(e.key === "Enter") verificar();
+      });
+
+      /* INICIAR JOGO */
+      carregarAtividade();
+    })();
+
+    /* =========================================================
+       5) SOPA DE LETRAS
+       ---------------------------------------------------------
+       RESPONSÁVEL POR:
+       - gerar a grade 13x13
+       - posicionar palavras
+       - permitir seleção
+       - validar palavra
+       - preencher lacunas
+       - marcar chips
+       - travar letras encontradas
+    ========================================================== */
+    (function(){
+      /* =======================================================
+         PALAVRAS DA SOPA
+         -------------------------------------------------------
+         USAMOS CALENDARIO NO FINAL PORQUE O TEXTO DIZ:
+         "Todo esto forma parte del ________"
+      ======================================================= */
+      const WORDS = [
+        "LUNES",
+        "MARTES",
+        "ENERO",
+        "JULIO",
+        "PRIMAVERA",
+        "VERANO",
+        "OTOÑO",
+        "INVIERNO",
+        "CALENDARIO"
+      ];
+
+      /* TAMANHO DA GRADE */
+      const SIZE = 13;
+
+      /* DIREÇÕES PERMITIDAS PARA POSICIONAR PALAVRAS */
+      const DIRECTIONS = [
+        { dr: 0, dc: 1 },   // horizontal
+        { dr: 1, dc: 0 },   // vertical
+        { dr: 1, dc: 1 },   // diagonal descendo
+        { dr: -1, dc: 1 }   // diagonal subindo
+      ];
+
+      /* =======================================================
+         ELEMENTOS DA SOPA
+      ======================================================= */
+      const overlay = document.getElementById("soupOverlay");
+      const gridEl = document.getElementById("soupGrid");
+      const modalMsg = document.getElementById("soupModalMsg");
+      const inlineMsg = document.getElementById("soupInlineMsg");
+      const wordListMain = document.getElementById("soupWordList");
+      const wordListModal = document.getElementById("soupWordListModal");
+
+      const btnAbrir = document.getElementById("btnAbrirSopa");
+      const btnConferir = document.getElementById("btnConferirSopa");
+      const btnResetSopa = document.getElementById("btnResetarSopa");
+      const btnFecharTop = document.getElementById("btnFecharSopaTop");
+      const btnValidarSelecao = document.getElementById("btnValidarSelecao");
+      const btnLimparSelecao = document.getElementById("btnLimparSelecao");
+      const btnVoltarTexto = document.getElementById("btnVoltarTexto");
+
+      /* =======================================================
+         ESTADO DA SOPA
+      ======================================================= */
+      let soupGrid = [];
+      let selectedPath = [];
+      let foundWords = new Set();
+      let lockedPositions = new Set();
+      let generated = false;
+
+      /* =======================================================
+         MAPEAMENTO DAS LACUNAS
+         -------------------------------------------------------
+         CADA PALAVRA PREENCHERÁ UMA OU MAIS LACUNAS.
+      ======================================================= */
+      const blankMap = {
+        "ENERO": ["sw_b1", "sw_b3"],
+        "LUNES": ["sw_b2"],
+        "JULIO": ["sw_b4"],
+        "PRIMAVERA": ["sw_b5"],
+        "VERANO": ["sw_b6"],
+        "OTOÑO": ["sw_b7"],
+        "INVIERNO": ["sw_b8"],
+        "CALENDARIO": ["sw_b9"]
+      };
+
+      /* =======================================================
+         DUPLICA A LISTA DE CHIPS PARA O MODAL
+      ======================================================= */
+      function cloneChipList(){
+        wordListModal.innerHTML = wordListMain.innerHTML;
+        syncChipState();
+      }
+
+      /* =======================================================
+         SINCRONIZA O ESTADO DOS CHIPS
+         -------------------------------------------------------
+         QUANDO UMA PALAVRA É ENCONTRADA, ELA FICA VERDE
+         TANTO NA COLUNA DIREITA QUANTO NO MODAL.
+      ======================================================= */
+      function syncChipState(){
+        const allChipGroups = [
+          document.querySelectorAll('#soupWordList .soupChip'),
+          document.querySelectorAll('#soupWordListModal .soupChip')
+        ];
+
+        allChipGroups.forEach(group => {
+          group.forEach(chip => {
+            const word = chip.dataset.word;
+            chip.classList.toggle("done", foundWords.has(word));
+          });
+        });
+      }
+
+      /* =======================================================
+         CRIA UMA GRADE VAZIA
+      ======================================================= */
+      function createEmptyGrid(){
+        return Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, () => ""));
+      }
+
+      /* =======================================================
+         GERA UMA LETRA ALEATÓRIA
+      ======================================================= */
+      function randomLetter(){
+        const letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+        return letters[Math.floor(Math.random() * letters.length)];
+      }
+
+      /* =======================================================
+         VERIFICA SE UMA PALAVRA PODE SER COLOCADA
+      ======================================================= */
+      function canPlaceWord(grid, word, row, col, dr, dc){
+        for(let i = 0; i < word.length; i++){
+          const r = row + dr * i;
+          const c = col + dc * i;
+
+          if(r < 0 || r >= SIZE || c < 0 || c >= SIZE) return false;
+
+          const current = grid[r][c];
+          if(current !== "" && current !== word[i]) return false;
+        }
+        return true;
+      }
+
+      /* =======================================================
+         TENTA POSICIONAR UMA PALAVRA NA GRADE
+      ======================================================= */
+      function placeWord(grid, word){
+        for(let attempt = 0; attempt < 500; attempt++){
+          const dir = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+          const row = Math.floor(Math.random() * SIZE);
+          const col = Math.floor(Math.random() * SIZE);
+
+          if(!canPlaceWord(grid, word, row, col, dir.dr, dir.dc)) continue;
+
+          for(let i = 0; i < word.length; i++){
+            const r = row + dir.dr * i;
+            const c = col + dir.dc * i;
+            grid[r][c] = word[i];
+          }
+          return true;
+        }
+        return false;
+      }
+
+      /* =======================================================
+         MONTA A SOPA COMPLETA
+         -------------------------------------------------------
+         1. CRIA GRADE VAZIA
+         2. POSICIONA AS PALAVRAS
+         3. PREENCHE O RESTO COM LETRAS ALEATÓRIAS
+      ======================================================= */
+      function buildSoup(){
+        let built = false;
+
+        while(!built){
+          const testGrid = createEmptyGrid();
+          let ok = true;
+
+          for(const word of WORDS){
+            if(!placeWord(testGrid, word)){
+              ok = false;
+              break;
+            }
+          }
+
+          if(ok){
+            for(let r = 0; r < SIZE; r++){
+              for(let c = 0; c < SIZE; c++){
+                if(testGrid[r][c] === "") testGrid[r][c] = randomLetter();
+              }
+            }
+
+            soupGrid = testGrid;
+            built = true;
+          }
+        }
+      }
+
+      /* =======================================================
+         GERA UMA CHAVE DE COORDENADA
+         EXEMPLO: "3-7"
+      ======================================================= */
+      function positionKey(row, col){
+        return `${row}-${col}`;
+      }
+
+      /* =======================================================
+         DESENHA A GRADE DA SOPA NO HTML
+         -------------------------------------------------------
+         INCLUI:
+         - numeração azul no topo
+         - numeração vermelha na lateral
+         - letras clicáveis
+      ======================================================= */
+      function renderSoupGrid(){
+        gridEl.innerHTML = "";
+
+        /* CANTO SUPERIOR ESQUERDO */
+        const corner = document.createElement("div");
+        corner.className = "cornerCell";
+        gridEl.appendChild(corner);
+
+        /* NÚMEROS DAS COLUNAS */
+        for(let c = 0; c < SIZE; c++){
+          const top = document.createElement("div");
+          top.className = "coordCell coordTop";
+          top.textContent = c + 1;
+          gridEl.appendChild(top);
+        }
+
+        /* LINHAS */
+        for(let r = 0; r < SIZE; r++){
+          const left = document.createElement("div");
+          left.className = "coordCell coordLeft";
+          left.textContent = r + 1;
+          gridEl.appendChild(left);
+
+          for(let c = 0; c < SIZE; c++){
+            const cell = document.createElement("button");
+            cell.type = "button";
+            cell.className = "soupCell";
+            cell.textContent = soupGrid[r][c];
+            cell.dataset.row = String(r);
+            cell.dataset.col = String(c);
+
+            /* SE JÁ FOI ENCONTRADA, TRAVA A CÉLULA */
+            if(lockedPositions.has(positionKey(r, c))){
+              
+            }
+
+            cell.addEventListener("click", function(){
+              toggleSoupCell(r, c, cell);
+            });
+
+            gridEl.appendChild(cell);
+          }
+        }
+      }
+
+      /* =======================================================
+         SELECIONA / DESSELECIONA UMA LETRA
+      ======================================================= */
+      function toggleSoupCell(row, col, cellEl){
+        const key = positionKey(row, col);
+
+        /* NÃO PODE ALTERAR CÉLULA JÁ TRAVADA */
+        
+
+        const idx = selectedPath.findIndex(item => item.key === key);
+
+        /* SE JÁ ESTAVA SELECIONADA, REMOVE */
+        if(idx >= 0){
+          selectedPath.splice(idx, 1);
+          cellEl.classList.remove("selected");
+          return;
+        }
+
+        /* SENÃO, ADICIONA */
+        selectedPath.push({ row, col, key, letter: soupGrid[row][col] });
+        cellEl.classList.add("selected");
+      }
+
+      /* =======================================================
+         LIMPA A SELEÇÃO TEMPORÁRIA
+      ======================================================= */
+      function clearSelection(){
+        document.querySelectorAll(".soupCell.selected").forEach(el => {
+          el.classList.remove("selected");
+        });
+
+        selectedPath = [];
+      }
+
+      /* =======================================================
+         VERIFICA SE A SELEÇÃO ESTÁ EM LINHA RETA
+         -------------------------------------------------------
+         ACEITA:
+         - horizontal
+         - vertical
+         - diagonal
+      ======================================================= */
+      function isStraightLine(path){
+        if(path.length < 2) return false;
+
+        const ordered = [...path];
+        const dr = Math.sign(ordered[1].row - ordered[0].row);
+        const dc = Math.sign(ordered[1].col - ordered[0].col);
+
+        if(dr === 0 && dc === 0) return false;
+
+        for(let i = 1; i < ordered.length; i++){
+          const prev = ordered[i - 1];
+          const cur = ordered[i];
+
+          if(cur.row - prev.row !== dr || cur.col - prev.col !== dc){
+            return false;
+          }
+        }
+
+        return true;
+      }
+
+      /* =======================================================
+         ORDENA A SELEÇÃO NA DIREÇÃO CORRETA
+         -------------------------------------------------------
+         ISSO EVITA PROBLEMAS QUANDO O ALUNO CLICA FORA DE ORDEM.
+      ======================================================= */
+      function sortSelectionForValidation(path){
+        if(path.length < 2) return path;
+
+        const a = path[0];
+        const b = path[1];
+        const dr = Math.sign(b.row - a.row);
+        const dc = Math.sign(b.col - a.col);
+
+        return [...path].sort((p1, p2) => {
+          const s1 = p1.row * dr + p1.col * dc;
+          const s2 = p2.row * dr + p2.col * dc;
+          return s1 - s2;
+        });
+      }
+
+      /* =======================================================
+         PREENCHE AS LACUNAS RELACIONADAS À PALAVRA
+      ======================================================= */
+      function updateBlanks(word){
+        const ids = blankMap[word] || [];
+
+        ids.forEach(id => {
+          const span = document.getElementById(id);
+          if(span){
+            span.textContent = word;
+            span.classList.add("done");
+          }
+        });
+      }
+
+      /* =======================================================
+         RESETA TODAS AS LACUNAS
+      ======================================================= */
+      function resetBlanks(){
+        const all = document.querySelectorAll(".blank-word");
+
+        all.forEach(span => {
+          span.classList.remove("done");
+          span.textContent = "__________";
+        });
+      }
+
+      /* =======================================================
+         VALIDA A SELEÇÃO FEITA PELO ALUNO
+         -------------------------------------------------------
+         PASSOS:
+         1. checa se selecionou algo
+         2. checa se está em linha reta
+         3. monta a palavra
+         4. compara com lista válida
+         5. trava letras encontradas
+         6. marca chips e lacunas
+      ======================================================= */
+      function validateSoupSelection(){
+        if(selectedPath.length < 2){
+          setMessage(modalMsg, "Selecione pelo menos 2 letras.", "erro");
+          return;
+        }
+
+        const ordered = sortSelectionForValidation(selectedPath);
+
+        if(!isStraightLine(ordered)){
+          setMessage(modalMsg, "Selecione letras em linha reta, sem pular casas.", "erro");
+          clearSelection();
+          return;
+        }
+
+        const word = ordered.map(item => item.letter).join("");
+        const reversed = word.split("").reverse().join("");
+
+        let matched = null;
+
+        if(WORDS.includes(word)) matched = word;
+        else if(WORDS.includes(reversed)) matched = reversed;
+
+        if(!matched){
+          setMessage(modalMsg, "❌ Essa seleção não forma uma palavra válida.", "erro");
+          clearSelection();
+          return;
+        }
+
+        if(foundWords.has(matched)){
+          setMessage(modalMsg, "⚠ Essa palavra já foi encontrada.", "erro");
+          clearSelection();
+          return;
+        }
+
+        /* MARCA A PALAVRA COMO ENCONTRADA */
+        foundWords.add(matched);
+
+        /* NÃO TRAVA MAIS AS CÉLULAS
+   ASSIM A MESMA LETRA PODE SER USADA EM OUTRA PALAVRA */
+ // ordered.forEach(item => lockedPositions.add(item.key));
+
+        /* ATUALIZA INTERFACE */
+        updateBlanks(matched);
+        syncChipState();
+        renderSoupGrid();
+        clearSelection();
+
+        setMessage(modalMsg, `✅ Palavra correta: ${matched}`, "ok");
+      }
+
+      /* =======================================================
+         CONFERE SE TODA A ATIVIDADE JÁ FOI CONCLUÍDA
+      ======================================================= */
+      function checkSoupActivity(){
+        if(foundWords.size === WORDS.length){
+         markDone("a3");
+          setMessage(inlineMsg, "✅ Atividade concluída! Todas as palavras foram encontradas.", "ok");
+        } else {
+          const faltam = WORDS.length - foundWords.size;
+          setMessage(inlineMsg, `❌ Ainda faltam ${faltam} palavra(s).`, "erro");
+        }
+      }
+
+      /* =======================================================
+         REINICIA A SOPA COMPLETA
+      ======================================================= */
+      function resetSoupActivity(){
+        foundWords = new Set();
+        lockedPositions = new Set();
+        selectedPath = [];
+        generated = false;
+
+        resetBlanks();
+        initializeSoup(true);
+
+        setMessage(inlineMsg, "Sopa reiniciada. Encontre as palavras novamente.", "");
+        setMessage(modalMsg, "Encontre as palavras e complete o texto.", "");
+      }
+
+      /* =======================================================
+         INICIALIZA A SOPA
+         -------------------------------------------------------
+         force = true  => gera tudo de novo
+         force = false => usa a grade atual, se já existir
+      ======================================================= */
+      function initializeSoup(force){
+        if(!generated || force){
+          buildSoup();
+          generated = true;
+        }
+
+        cloneChipList();
+        renderSoupGrid();
+      }
+
+      /* =======================================================
+         ABRE O MODAL DA SOPA
+      ======================================================= */
+      function openSoupModal(){
+        initializeSoup(false);
+        overlay.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      /* =======================================================
+         FECHA O MODAL DA SOPA
+      ======================================================= */
+      function closeSoupModal(){
+        overlay.classList.remove("is-open");
+        document.body.style.overflow = "";
+      }
+
+      /* =======================================================
+         EVENTOS DA SOPA
+      ======================================================= */
+      btnAbrir.addEventListener("click", openSoupModal);
+      btnConferir.addEventListener("click", checkSoupActivity);
+      btnResetSopa.addEventListener("click", resetSoupActivity);
+
+      btnFecharTop.addEventListener("click", closeSoupModal);
+      btnValidarSelecao.addEventListener("click", validateSoupSelection);
+
+      btnLimparSelecao.addEventListener("click", function(){
+        clearSelection();
+        setMessage(modalMsg, "Seleção limpa.", "");
+      });
+
+      btnVoltarTexto.addEventListener("click", closeSoupModal);
+
+      overlay.addEventListener("click", function(e){
+        if(e.target === overlay) closeSoupModal();
+      });
+
+      document.addEventListener("keydown", function(e){
+        if(e.key === "Escape" && overlay.classList.contains("is-open")){
+          closeSoupModal();
+        }
+      });
+
+      /* =======================================================
+         INICIA A SOPA JÁ NO CARREGAMENTO
+      ======================================================= */
+      initializeSoup(true);
+    })();
+  </script>
+<script>
+/* =========================================================
+   PÁGINA 4 — ORDENA LAS PALABRAS (MATERIAL ESCOLAR)
+   ---------------------------------------------------------
+   ESTA PARTE REPETE A LÓGICA DA PÁGINA 2,
+   MAS COM VARIÁVEIS E IDs EXCLUSIVOS.
+========================================================= */
+(function(){
+
+  /* =======================================================
+     LISTA DAS ATIVIDADES DA PÁGINA 4
+     -------------------------------------------------------
+     CADA ITEM TEM:
+     - imagem
+     - palavra correta
+     - palavra embaralhada
+  ======================================================= */
+  const atividades4 = [
+    { imagem:"agenda.jpg",           correta:"AGENDA",         embaralhada:"NAADEG" },
+    { imagem:"boligrafo.jpg",        correta:"BOLÍGRAFO",      embaralhada:"ÍLBAOOFRG" },
+    { imagem:"calculadora.jpg",      correta:"CALCULADORA",    embaralhada:"RLCOADAUCLA" },
+    { imagem:"cuaderno.jpg",         correta:"CUADERNO",       embaralhada:"CAUDERON" },
+    { imagem:"estuche.jpg",          correta:"ESTUCHE",        embaralhada:"CEHUTSE" },
+    { imagem:"goma de borrar.jpg",   correta:"GOMA DE BORRAR", embaralhada:"AMGODE RABRRO" },
+    { imagem:"lapiz.jpg",            correta:"LÁPIZ",          embaralhada:"ÁLZPI" },
+    { imagem:"libro.jpg",            correta:"LIBRO",          embaralhada:"ROBIL" },
+    { imagem:"mochila.jpg",          correta:"MOCHILA",        embaralhada:"OMCIHLA" },
+    { imagem:"ordenador.jpg",        correta:"ORDENADOR",      embaralhada:"RODNAEDRO" },
+    { imagem:"pizarra.jpg",          correta:"PIZARRA",        embaralhada:"RRAIPZA" },
+    { imagem:"regla.jpg",            correta:"REGLA",          embaralhada:"LAGER" },
+    { imagem:"sacapuntas.jpg",       correta:"SACAPUNTAS",     embaralhada:"CASPUANSTA" },
+    { imagem:"subrayador.jpg",       correta:"SUBRAYADOR",     embaralhada:"YASUBRDOAR" },
+    { imagem:"tijeras.jpg",          correta:"TIJERAS",        embaralhada:"RTJEIAS" }
+  ];
+
+  /* =======================================================
+     ELEMENTOS DA INTERFACE
+  ======================================================= */
+  const imgAtividade4       = document.getElementById("imgAtividade4");
+  const palavraEmbaralhada4 = document.getElementById("palavraEmbaralhada4");
+  const respostaAluno4      = document.getElementById("respostaAluno4");
+  const btnVerificar4       = document.getElementById("btnVerificar4");
+  const btnReiniciar4       = document.getElementById("btnReiniciar4");
+  const feedback4           = document.getElementById("feedback4");
+  const progressoTexto4     = document.getElementById("progressoTexto4");
+  const barraInterna4       = document.getElementById("barraInterna4");
+  const listaAcertos4       = document.getElementById("listaAcertos4");
+  const cardJogo4           = document.getElementById("cardJogo4");
+  const cardFinal4          = document.getElementById("cardFinal4");
+  const btnJogarNovamente4  = document.getElementById("btnJogarNovamente4");
+
+  /* =======================================================
+     ESTADO DO JOGO
+  ======================================================= */
+  let indiceAtual4 = 0;
+  let acertos4 = [];
+
+  /* =======================================================
+     REMOVE ACENTOS PARA COMPARAÇÃO
+     -------------------------------------------------------
+     ISSO EVITA PROBLEMA COM:
+     - BOLÍGRAFO
+     - LÁPIZ
+  ======================================================= */
+  function normalizarTexto4(texto){
+    return texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toUpperCase();
+  }
+
+  /* =======================================================
+     DEFINE MENSAGEM VISUAL
+  ======================================================= */
+  function setFeedback4(texto, tipo){
+    feedback4.textContent = texto;
+    feedback4.classList.remove("ok", "erro");
+
+    if(tipo){
+      feedback4.classList.add(tipo);
+    }
+  }
+
+  /* =======================================================
+     ATUALIZA A LISTA DE PALAVRAS CONCLUÍDAS
+  ======================================================= */
+  function atualizarListaAcertos4(){
+    if(acertos4.length === 0){
+      listaAcertos4.textContent = "Nenhuma palavra acertada ainda.";
+      return;
+    }
+
+    listaAcertos4.innerHTML = acertos4.map((palavra, i) => {
+      return `<div>${i + 1}. ${palavra}</div>`;
+    }).join("");
+  }
+
+  /* =======================================================
+     ATUALIZA A BARRA DE PROGRESSO
+  ======================================================= */
+  function atualizarProgresso4(){
+    const total = atividades4.length;
+    const etapaAtual = Math.min(indiceAtual4 + 1, total);
+    const percentual = (indiceAtual4 / total) * 100;
+
+    progressoTexto4.textContent = `${etapaAtual} / ${total}`;
+    barraInterna4.style.width = `${percentual}%`;
+  }
+
+  /* =======================================================
+     CARREGA A ETAPA ATUAL
+  ======================================================= */
+  function carregarEtapa4(){
+    const total = atividades4.length;
+
+    if(indiceAtual4 >= total){
+      cardJogo4.hidden = true;
+      cardFinal4.hidden = false;
+      progressoTexto4.textContent = `${total} / ${total}`;
+      barraInterna4.style.width = "100%";
+      setFeedback4("✅ Você concluiu todas as palavras!", "ok");
+      return;
+    }
+
+    const atual = atividades4[indiceAtual4];
+
+    cardJogo4.hidden = false;
+    cardFinal4.hidden = true;
+
+    imgAtividade4.src = atual.imagem;
+    imgAtividade4.alt = atual.correta;
+    palavraEmbaralhada4.textContent = atual.embaralhada;
+    respostaAluno4.value = "";
+    respostaAluno4.focus();
+
+    atualizarProgresso4();
+    atualizarListaAcertos4();
+    setFeedback4("Clique em VERIFICAR para validar sua resposta.", "");
+  }
+
+  /* =======================================================
+     REINICIA O JOGO COMPLETO
+  ======================================================= */
+  function reiniciarJogo4(){
+    indiceAtual4 = 0;
+    acertos4 = [];
+    atualizarListaAcertos4();
+    carregarEtapa4();
+  }
+
+  /* =======================================================
+     VERIFICA A RESPOSTA
+     -------------------------------------------------------
+     REGRA PEDIDA:
+     - acertou -> avança
+     - errou   -> volta ao início
+  ======================================================= */
+  function verificarResposta4(){
+    const atual = atividades4[indiceAtual4];
+    const resposta = normalizarTexto4(respostaAluno4.value);
+    const correta  = normalizarTexto4(atual.correta);
+
+    if(!resposta){
+      setFeedback4("Digite uma resposta antes de verificar.", "erro");
+      return;
+    }
+
+    if(resposta === correta){
+      acertos4.push(atual.correta);
+      indiceAtual4++;
+      if(indiceAtual4 === atividades4.length) markDone("a4");
+      setFeedback4("✅ Resposta correta! Vamos para a próxima.", "ok");
+      atualizarListaAcertos4();
+
+      setTimeout(() => {
+        carregarEtapa4();
+      }, 600);
+
+    } else {
+      setFeedback4("❌ Resposta errada. O jogo voltará para o início.", "erro");
+
+      setTimeout(() => {
+        reiniciarJogo4();
+      }, 900);
+    }
+  }
+
+  /* =======================================================
+     EVENTOS
+  ======================================================= */
+  if(btnVerificar4){
+    btnVerificar4.addEventListener("click", verificarResposta4);
+  }
+
+  if(btnReiniciar4){
+    btnReiniciar4.addEventListener("click", reiniciarJogo4);
+  }
+
+  if(btnJogarNovamente4){
+    btnJogarNovamente4.addEventListener("click", reiniciarJogo4);
+  }
+
+  if(respostaAluno4){
+    respostaAluno4.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        e.preventDefault();
+        verificarResposta4();
+      }
+    });
+  }
+
+  /* =======================================================
+     INÍCIO
+  ======================================================= */
+  if(imgAtividade4 && palavraEmbaralhada4){
+    carregarEtapa4();
+  }
+
+})();
+</script>
+<script>
+/* =========================================================
+   5) MODAL DO JOGO DA MEMÓRIA — PÁGINA 4
+   ---------------------------------------------------------
+   RESPONSÁVEL POR:
+   - abrir a modal da memória
+   - fechar a modal
+   - recarregar o iframe ao abrir, se desejar reiniciar
+========================================================= */
+(function(){
+  const btnAbrirMemoria4 = document.getElementById("btnAbrirMemoria4");
+  const memoriaModal4 = document.getElementById("memoriaModal4");
+  const memoriaOverlay4 = document.getElementById("memoriaOverlay4");
+  const memoriaCloseBtn4 = document.getElementById("memoriaCloseBtn4");
+  const memoriaCloseBtnFooter4 = document.getElementById("memoriaCloseBtnFooter4");
+  const memoriaFrame4 = document.getElementById("memoriaFrame4");
+  const memoriaMsg4 = document.getElementById("memoriaMsg4");
+
+  let memoria4Concluida = false;
+
+  function concluirMemoria4Automaticamente(){
+    if(memoria4Concluida) return;
+    memoria4Concluida = true;
+
+    if(memoriaMsg4){
+      memoriaMsg4.dataset.memoriaCompleta = "1";
+    }
+
+    markDone("a7", "memoriaMsg4", "✅ Jogo da memória concluído automaticamente após encontrar todos os pares.");
+
+    if(memoriaMsg4){
+      memoriaMsg4.dataset.memoriaCompleta = "1";
+      memoriaMsg4.textContent = "✅ Jogo da memória concluído automaticamente. Todos os pares foram encontrados.";
+      memoriaMsg4.style.background = "#d4edda";
+      memoriaMsg4.style.color = "#155724";
+      memoriaMsg4.style.border = "1px solid #c3e6cb";
+    }
+
+    closeMemoria4();
+  }
+
+  function instalarDetectorAutomaticoMemoria4(){
+    let doc;
+    try{
+      doc = memoriaFrame4.contentDocument || (memoriaFrame4.contentWindow && memoriaFrame4.contentWindow.document);
+    }catch(e){
+      return;
+    }
+    if(!doc || !doc.body || doc.__falangeMemoria4Detector) return;
+    doc.__falangeMemoria4Detector = true;
+
+    const palavrasVitoria = [
+      "parabéns, você encontrou",
+      "parabens, voce encontrou",
+      "jogo da memória concluído",
+      "jogo da memoria concluido",
+      "fim de jogo",
+      "você venceu",
+      "voce venceu",
+      "muy bien",
+      "felicitaciones"
+    ];
+
+    function visivel(el){
+      try{
+        const st = doc.defaultView.getComputedStyle(el);
+        const r = el.getBoundingClientRect();
+        return st.display !== "none" && st.visibility !== "hidden" && r.width > 0 && r.height > 0;
+      }catch(e){
+        return true;
+      }
+    }
+
+    function cartaPossivel(el){
+      const c = (el.className || "").toString().toLowerCase();
+      const id = (el.id || "").toLowerCase();
+      const role = (el.getAttribute("role") || "").toLowerCase();
+      return (
+        c.includes("card") || c.includes("carta") || c.includes("memory") || c.includes("memoria") ||
+        id.includes("card") || id.includes("carta") || id.includes("memory") || id.includes("memoria") ||
+        el.hasAttribute("data-card") || el.hasAttribute("data-pair") || role === "button"
+      );
+    }
+
+    function cartaResolvida(el){
+      const c = (el.className || "").toString().toLowerCase();
+      const aria = (el.getAttribute("aria-label") || "").toLowerCase();
+      const dataMatched = (el.getAttribute("data-matched") || "").toLowerCase();
+      return (
+        c.includes("matched") || c.includes("match") || c.includes("done") || c.includes("ok") ||
+        c.includes("found") || c.includes("acert") || c.includes("resolvid") || c.includes("par-ok") ||
+        dataMatched === "true" || aria.includes("encontrado") || aria.includes("correto")
+      );
+    }
+
+    function verificarConclusao(){
+      if(memoria4Concluida) return;
+
+      const texto = (doc.body.innerText || "").toLowerCase();
+      if(palavrasVitoria.some(p => texto.includes(p))){
+        concluirMemoria4Automaticamente();
+        return;
+      }
+
+      const elementos = Array.from(doc.querySelectorAll("button, [role='button'], [data-card], [data-pair], .memoryCard, .memory-card, .memoria-card, .carta, .card"))
+        .filter(el => visivel(el) && cartaPossivel(el));
+
+      const cartas = elementos.filter(el => {
+        const txt = (el.innerText || el.textContent || "").trim();
+        return txt.length > 0 || el.querySelector("img, svg");
+      });
+
+      if(cartas.length >= 4){
+        const resolvidas = cartas.filter(cartaResolvida);
+        if(resolvidas.length >= cartas.length){
+          concluirMemoria4Automaticamente();
+        }
+      }
+    }
+
+    doc.addEventListener("click", function(){
+      setTimeout(verificarConclusao, 350);
+      setTimeout(verificarConclusao, 900);
+    }, true);
+
+    const observer = new MutationObserver(function(){
+      setTimeout(verificarConclusao, 120);
+    });
+    observer.observe(doc.body, {subtree:true, childList:true, attributes:true, characterData:true});
+
+    setInterval(verificarConclusao, 1200);
+    setTimeout(verificarConclusao, 800);
+  }
+
+
+  if(
+    !btnAbrirMemoria4 ||
+    !memoriaModal4 ||
+    !memoriaOverlay4 ||
+    !memoriaCloseBtn4 ||
+    !memoriaCloseBtnFooter4 ||
+    !memoriaFrame4
+  ){
+    return;
+  }
+
+  function openMemoria4(){
+    memoriaModal4.classList.add("is-open");
+    memoriaModal4.setAttribute("aria-hidden", "false");
+
+    /* RECARREGA O JOGO AO ABRIR */
+    memoriaFrame4.src = memoriaFrame4.src;
+
+    if(memoriaMsg4){
+      memoriaMsg4.dataset.memoriaCompleta = "0";
+      state.done.a7 = false;
+      saveProgress();
+      updateCertButton();
+      memoriaMsg4.textContent = "🧠 Jogo aberto. Continue até formar todos os pares.";
+      memoriaMsg4.style.background = "#fff3cd";
+      memoriaMsg4.style.color = "#664d03";
+      memoriaMsg4.style.border = "1px solid #ffecb5";
+    }
+  }
+
+  function closeMemoria4(){
+  memoriaModal4.classList.remove("is-open");
+  memoriaModal4.setAttribute("aria-hidden", "true");
+}
+
+btnAbrirMemoria4.addEventListener("click", openMemoria4);
+memoriaFrame4.addEventListener("load", instalarDetectorAutomaticoMemoria4);
+memoriaCloseBtn4.addEventListener("click", closeMemoria4);
+memoriaCloseBtnFooter4.addEventListener("click", closeMemoria4);
+memoriaOverlay4.addEventListener("click", closeMemoria4);
+
+document.addEventListener("keydown", function(event){
+  if(event.key === "Escape" && memoriaModal4.classList.contains("is-open")){
+    closeMemoria4();
+  }
+});
+
+window.addEventListener("message", function(event){
+  if(!event.data) return;
+
+  if(event.data === "MEMORIA4_OK" || event.data === "memory-complete" || event.data === "MEMORIA_CONCLUIDA"){
+    concluirMemoria4Automaticamente();
+  }
+});
+
+/* =========================================================
+   ESCUTA FINALIZAÇÃO DO JOGO DA MEMÓRIA
+========================================================= */
+window.addEventListener("message", function(event){
+  if(!event.data) return;
+
+  if(event.data === "MEMORIA4_OK" || event.data === "memory-complete" || event.data === "MEMORIA_CONCLUIDA"){
+    concluirMemoria4Automaticamente();
+  }
+});
+
+})();
+
+/* =========================================================
+   BOTÕES DE FINALIZAÇÃO MANUAL — EVITAM FALHA DE EVENTO EM CELULAR/IFRAME
+========================================================= */
+document.addEventListener("click", function(event){
+  const target = event.target;
+  if(!target) return;
+  if(target.id === "btnFinalizarHotspot1") markDone("a1", "hotspotMsg1", "✅ Página 1 concluída.");
+  if(target.id === "btnFinalizarHotspot3") markDone("a6", "hotspotMsg3", "✅ Página 3 concluída.");
+  if(target.id === "btnConcluirAudio5") markDone("a5", "audioGameFeedback5", "✅ Jogo de escuta marcado como concluído.");
+});
+</script>
+<script>
+/* =========================================================
+   PÁGINA 5 — JOGO DE ESCUTA COM CANVAS + HOTSPOTS
+   ---------------------------------------------------------
+   VERSÃO LIMPA:
+   - 20 frases em português no canvas
+   - 10 áudios aleatórios por rodada
+   - resposta clicando no próprio canvas
+   - cortina de pixels preta
+   - errou = reinicia tudo
+========================================================= */
+(function(){
+
+  /* =======================================================
+     ELEMENTOS DA INTERFACE
+  ======================================================= */
+  const btnAbrir = document.getElementById("btnAbrirAudioGame5");
+  const modal = document.getElementById("audioGameModal5");
+  const overlay = document.getElementById("audioGameOverlay5");
+  const closeBtn = document.getElementById("audioGameCloseBtn5");
+  const closeBtnFooter = document.getElementById("audioGameCloseBtnFooter5");
+
+  const canvas = document.getElementById("audioPhraseCanvas5");
+  const curtain = document.getElementById("audioPixelCurtain5");
+  const btnPlay = document.getElementById("btnPlayAudio5");
+  const btnRestart = document.getElementById("btnRestartAudioGame5");
+  const audioStepText = document.getElementById("audioStepText5");
+  const audioProgressFill = document.getElementById("audioProgressFill5");
+  const feedback = document.getElementById("audioGameFeedback5");
+
+  if(
+    !btnAbrir || !modal || !overlay || !closeBtn || !closeBtnFooter ||
+    !canvas || !curtain || !btnPlay || !btnRestart ||
+    !audioStepText || !audioProgressFill || !feedback
+  ){
+    return;
+  }
+
+  const ctx = canvas.getContext("2d");
+  const cctx = curtain.getContext("2d");
+
+  /* =======================================================
+     DADOS COMPLETOS — 20 FRASES
+     -------------------------------------------------------
+     ES = áudio
+     PT = frase desenhada no canvas
+  ======================================================= */
+  const frasesCompletas = [
+    { es:"Mañana hay examen", pt:"Amanhã tem prova" },
+    { es:"Silencio, por favor", pt:"Silêncio, por favor" },
+    { es:"Abrid el libro por la página", pt:"Abram o livro na página..." },
+    { es:"¿Por qué llegas tarde?", pt:"Por que você chegou atrasado?" },
+    { es:"¿Algún o alguna voluntario o voluntaria?", pt:"Algum / alguma voluntário / voluntária?" },
+    { es:"Trabajamos en parejas, grupos o en solitario", pt:"Vamos trabalhar em dupla / grupo / sozinho(a)." },
+    { es:"¿Has hecho los deberes?", pt:"Você fez a tarefa de casa?" },
+    { es:"Guarda el móvil", pt:"Guarde o celular." },
+    { es:"Lee o escribe", pt:"Leia / escreva." },
+    { es:"Siéntate bien", pt:"Sente-se direito." },
+
+    { es:"¿Puedo ir al baño?", pt:"Posso ir ao banheiro?" },
+    { es:"Tengo una pregunta", pt:"Eu tenho uma pergunta." },
+    { es:"No entiendo, ¿puedes repetir?", pt:"Eu não entendo. Você pode repetir?" },
+    { es:"¿Qué significa?", pt:"O que significa...?" },
+    { es:"No me encuentro bien", pt:"Eu não estou me sentindo bem." },
+    { es:"¿Puedo abrir o cerrar la ventana?", pt:"Posso abrir / fechar a janela?" },
+    { es:"He terminado o no he terminado", pt:"Terminei / não terminei." },
+    { es:"¿Cómo se dice en español?", pt:"Como se diz em espanhol...?" },
+    { es:"Más despacio, por favor", pt:"Mais devagar, por favor." },
+    { es:"¿Cómo se escribe?", pt:"Como se escreve...?" }
+  ];
+
+  /* =======================================================
+     ESTADO DO JOGO
+  ======================================================= */
+  let frasesDaRodada = [];
+  let currentIndex = 0;
+  let phraseBoxes = [];
+  let isPlaying = false;
+  let utterance = null;
+
+  /* =======================================================
+     FUNÇÕES UTILITÁRIAS
+  ======================================================= */
+  function normalizeText(text){
+    return text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toUpperCase();
+  }
+
+  function setFeedback(text, type){
+    feedback.textContent = text;
+    feedback.classList.remove("ok", "erro");
+    if(type){
+      feedback.classList.add(type);
+    }
+  }
+
+  function shuffleArray(lista){
+    const copia = [...lista];
+    for(let i = copia.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+    return copia;
+  }
+
+  function gerarRodadaAleatoria(){
+    frasesDaRodada = shuffleArray(frasesCompletas).slice(0, 10);
+    currentIndex = 0;
+  }
+
+  /* =======================================================
+     CANVAS — POSIÇÕES DAS 20 FRASES
+  ======================================================= */
+  function generatePhraseBoxes(){
+    const embaralhadas = shuffleArray(frasesCompletas);
+
+    phraseBoxes = embaralhadas.map((item, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+
+      const w = canvas.width * 0.36;
+      const h = 58;
+      const x = col === 0
+        ? canvas.width * 0.08 + Math.random() * 30
+        : canvas.width * 0.55 + Math.random() * 30;
+      const y = 28 + row * 54 + Math.random() * 10;
+
+      return {
+        es: item.es,
+        pt: item.pt,
+        x, y, w, h
+      };
+    });
+  }
+
+  function roundRect(context, x, y, w, h, r, fill, stroke){
+    context.beginPath();
+    context.moveTo(x + r, y);
+    context.lineTo(x + w - r, y);
+    context.quadraticCurveTo(x + w, y, x + w, y + r);
+    context.lineTo(x + w, y + h - r);
+    context.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    context.lineTo(x + r, y + h);
+    context.quadraticCurveTo(x, y + h, x, y + h - r);
+    context.lineTo(x, y + r);
+    context.quadraticCurveTo(x, y, x + r, y);
+    context.closePath();
+    if(fill) context.fill();
+    if(stroke) context.stroke();
+  }
+
+  function wrapText(context, text, x, y, maxWidth, lineHeight){
+    const words = text.split(" ");
+    let line = "";
+    const lines = [];
+
+    for(let i = 0; i < words.length; i++){
+      const test = line + words[i] + " ";
+      if(context.measureText(test).width > maxWidth && i > 0){
+        lines.push(line.trim());
+        line = words[i] + " ";
+      }else{
+        line = test;
+      }
+    }
+    lines.push(line.trim());
+
+    lines.forEach((ln, idx) => {
+      context.fillText(ln, x, y + idx * lineHeight);
+    });
+  }
+
+  function drawPixelText(text, x, y, maxWidth){
+    ctx.save();
+    ctx.fillStyle = "#111";
+    ctx.font = "900 16px monospace";
+    wrapText(ctx, text, x, y, maxWidth, 18);
+    ctx.restore();
+  }
+
+  function drawCanvas(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#f8fafc";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    phraseBoxes.forEach(box => {
+      ctx.fillStyle = "#ffffff";
+      roundRect(ctx, box.x, box.y, box.w, box.h, 10, true, false);
+
+      ctx.strokeStyle = "#9b59b6";
+      ctx.lineWidth = 2;
+      roundRect(ctx, box.x, box.y, box.w, box.h, 10, false, true);
+
+      drawPixelText(box.pt, box.x + 10, box.y + 12, box.w - 20);
+    });
+  }
+
+  /* =======================================================
+     CORTINA PIXELADA
+  ======================================================= */
+  function drawCurtain(){
+    cctx.clearRect(0, 0, curtain.width, curtain.height);
+    const px = 18;
+
+    for(let y = 0; y < curtain.height; y += px){
+      for(let x = 0; x < curtain.width; x += px){
+        cctx.fillStyle = `rgba(0,0,0,${0.88 + Math.random() * 0.12})`;
+        cctx.fillRect(x, y, px, px);
+      }
+    }
+  }
+
+  function revealCurtain(){
+    curtain.classList.add("hidden");
+  }
+
+  function hideCurtainFastAndShuffle(){
+    curtain.classList.remove("hidden");
+    drawCurtain();
+    generatePhraseBoxes();
+    drawCanvas();
+  }
+
+  /* =======================================================
+     PROGRESSO
+  ======================================================= */
+  function updateProgress(){
+    audioStepText.textContent = `${currentIndex + 1} / ${frasesDaRodada.length}`;
+    audioProgressFill.style.width = `${(currentIndex / frasesDaRodada.length) * 100}%`;
+  }
+
+  /* =======================================================
+     REDIMENSIONAMENTO
+  ======================================================= */
+  function resizeCanvas(){
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(700, Math.floor(rect.width));
+    const height = Math.floor(width * 0.625);
+
+    canvas.width = width;
+    canvas.height = height;
+    curtain.width = width;
+    curtain.height = height;
+
+    generatePhraseBoxes();
+    drawCanvas();
+    drawCurtain();
+  }
+
+  /* =======================================================
+     FLUXO DO JOGO
+  ======================================================= */
+  function restartGame(){
+    gerarRodadaAleatoria();
+    window.speechSynthesis.cancel();
+
+    isPlaying = false;
+    utterance = null;
+    btnPlay.disabled = false;
+
+    generatePhraseBoxes();
+    drawCanvas();
+    drawCurtain();
+    updateProgress();
+
+    setFeedback("Clique em TOCAR ÁUDIO para iniciar. Depois clique na frase correta no canvas.", "");
+  }
+
+  function advanceGame(){
+  currentIndex++;
+
+  if(currentIndex >= frasesDaRodada.length){
+    audioProgressFill.style.width = "100%";
+    btnPlay.disabled = true;
+    markDone("a5");
+    setFeedback("✅ Excelente! Você concluiu os 10 áudios.", "ok");
+    return;
+  }
+
+  updateProgress();
+  setFeedback("✅ Correto. Toque o próximo áudio.", "ok");
+  hideCurtainFastAndShuffle();
+}
+
+  function playAudio(){
+    if(isPlaying) return;
+
+    const current = frasesDaRodada[currentIndex];
+
+    window.speechSynthesis.cancel();
+
+    utterance = new SpeechSynthesisUtterance(current.es);
+    utterance.lang = "es-ES";
+    utterance.rate = 0.92;
+    utterance.pitch = 1;
+
+    isPlaying = true;
+    btnPlay.disabled = true;
+
+    revealCurtain();
+    setFeedback("🔊 Escuchando... observe rápido e prepare-se para clicar.", "");
+
+    utterance.onend = function(){
+      setTimeout(() => {
+        hideCurtainFastAndShuffle();
+        isPlaying = false;
+        btnPlay.disabled = false;
+        setFeedback("Agora clique na frase correta dentro do canvas.", "");
+      }, 250);
+    };
+
+    utterance.onerror = function(){
+      hideCurtainFastAndShuffle();
+      isPlaying = false;
+      btnPlay.disabled = false;
+      setFeedback("Erro ao tocar o áudio.", "erro");
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function detectCanvasClick(evt){
+    if(isPlaying) return;
+    if(btnPlay.disabled && currentIndex >= frasesDaRodada.length) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const mx = (evt.clientX - rect.left) * scaleX;
+    const my = (evt.clientY - rect.top) * scaleY;
+
+    const clicked = phraseBoxes.find(box =>
+      mx >= box.x && mx <= box.x + box.w &&
+      my >= box.y && my <= box.y + box.h
+    );
+
+    if(!clicked) return;
+
+    const correct = frasesDaRodada[currentIndex].pt;
+
+    if(normalizeText(clicked.pt) === normalizeText(correct)){
+      advanceGame();
+    } else {
+      setFeedback("❌ Errou. O jogo voltou ao começo.", "erro");
+      setTimeout(() => {
+        restartGame();
+      }, 500);
+    }
+  }
+
+  /* =======================================================
+     MODAL
+  ======================================================= */
+  function openModal(){
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    resizeCanvas();
+    restartGame();
+  }
+
+  function closeModal(){
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  window.speechSynthesis.cancel();
+  isPlaying = false;
+  btnPlay.disabled = false;
+}
+
+  /* =======================================================
+     EVENTOS
+  ======================================================= */
+  btnAbrir.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+  closeBtnFooter.addEventListener("click", closeModal);
+  overlay.addEventListener("click", closeModal);
+
+  btnPlay.addEventListener("click", playAudio);
+  btnRestart.addEventListener("click", restartGame);
+  canvas.addEventListener("click", detectCanvasClick);
+
+  window.addEventListener("resize", function(){
+    if(modal.classList.contains("is-open")){
+      resizeCanvas();
+    }
+  });
+
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && modal.classList.contains("is-open")){
+      closeModal();
+    }
+  });
+
+})();
+function cleanCodePart(v, max=8){
+  return normalizeText(String(v || "")).replace(/[^A-Z0-9]/g, "").slice(0, max) || "X";
+}
+
+function strongHash(text){
+  text = String(text || "");
+  let h1 = 0x811c9dc5;
+  let h2 = 0x9e3779b9;
+  for(let i=0; i<text.length; i++){
+    const c = text.charCodeAt(i);
+    h1 ^= c;
+    h1 = Math.imul(h1, 16777619);
+    h2 ^= (c + i);
+    h2 = Math.imul(h2, 1597334677);
+  }
+  const n = ((h1 >>> 0).toString(36) + (h2 >>> 0).toString(36)).toUpperCase();
+  return n.replace(/[^A-Z0-9]/g, "").slice(0, 10).padEnd(10, "0");
+}
+
+function todayBR(){
+  return new Date().toLocaleDateString("pt-BR");
+}
+
+function getCertText(id, fallback=""){
+  const el = document.getElementById(id);
+  return el ? el.textContent.trim() : fallback;
+}
+
+function studentInitials(){
+  const name = getCertText("certName", getCertText("certStudent", "ESTUDANTE"));
+  const parts = normalizeText(name).split(/\s+/).filter(Boolean);
+  const first = parts[0]?.[0] || "X";
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : "X";
+  return `${first}${last}`;
+}
+
+function allActivitiesDone(){
+  smartAutoDetectCompletion();
+  return !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && state.done.a7);
+}
+
+function buildCertificateCode(){
+  const name = cleanCodePart(getCertText("certName", getCertText("certStudent", "ESTUDANTE")), 10);
+  const school = cleanCodePart(getCertText("certSchool", "ESCOLA"), 6);
+  const turma = cleanCodePart(getCertText("certClass", "TURMA"), 6);
+  const date = todayBR().replace(/\D/g, "");
+  const progress = Object.keys(state.done).map(k => `${k}:${state.done[k] ? 1 : 0}`).join("|");
+  const base = `${name}|${school}|${turma}|${date}|${progress}|FALANGE-AULA12-VALIDACAO-LOCAL`;
+  const hash = strongHash(base);
+  return `FLG12-${studentInitials()}-${turma}-${date.slice(0,4)}-${hash}-7A`;
+}
+
+function buildFingerprint(){
+  const name = normalizeText(getCertText("certName", getCertText("certStudent", "ESTUDANTE")));
+  const school = normalizeText(getCertText("certSchool", "ESCOLA"));
+  const turma = normalizeText(getCertText("certClass", "TURMA"));
+  return `${studentInitials()} • ${turma || "TURMA"} • ${todayBR()} • ${strongHash(name + "|" + school + "|" + turma).slice(0,6)}`;
+}
+
+function updateCertificateValidation(){
+  const certificateCode = buildCertificateCode();
+  const anti = document.getElementById("certAntiCode");
+  const antiW = document.getElementById("certAntiCodeWatermark");
+  const fp = document.getElementById("certFingerprint");
+  const cloud = document.getElementById("certWatermarkCloud");
+  const date = document.getElementById("certDate");
+  const time = document.getElementById("certTime");
+  if(date) date.textContent = todayBR();
+  if(time) time.textContent = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
+  if(anti) anti.textContent = certificateCode;
+  if(antiW) antiW.textContent = certificateCode;
+  if(fp) fp.textContent = buildFingerprint();
+  if(cloud){
+    const wm = `NOME: ${getCertText("certName", getCertText("certStudent", "ESTUDANTE"))} • TURMA: ${getCertText("certClass", "TURMA")} • ESCOLA: ${getCertText("certSchool", "ESCOLA")} • DATA: ${todayBR()} • CÓDIGO: ${certificateCode}`;
+    cloud.innerHTML = Array.from({length:18}, () => `<div class="certWmItem">${wm}</div>`).join("");
+  }
+  document.body.classList.add("cert-ready");
+}
+
+function openCert(){
+  const certOverlay = document.getElementById("certOverlay");
+  if(!certOverlay) return;
+  if(!allActivitiesDone()){
+    tryFinishAll();
+    return;
+  }
+  updateCertificateValidation();
+  certOverlay.style.display = "flex";
+}
+function closeCert(){
+  const certOverlay = document.getElementById("certOverlay");
+  if(!certOverlay) return;
+  certOverlay.style.display = "none";
+}
+
+function printCert(){
+  if(!allActivitiesDone()){
+    alert("Impressão bloqueada: finalize todas as atividades e gere o código antifraude.");
+    return;
+  }
+  updateCertificateValidation();
+  window.print();
+}
+
+document.addEventListener("keydown", function(e){
+  const certOverlay = document.getElementById("certOverlay");
+  const key = String(e.key || "").toLowerCase();
+  const isPrint = (e.ctrlKey || e.metaKey) && key === "p";
+  const isPrintScreen = key === "printscreen" || e.key === "PrintScreen";
+  const isSave = (e.ctrlKey || e.metaKey) && key === "s";
+  if(isPrint && !allActivitiesDone()){
+    e.preventDefault();
+    alert("Impressão bloqueada: finalize todas as atividades antes de imprimir o certificado.");
+    return;
+  }
+  if(isPrint && allActivitiesDone()){
+    updateCertificateValidation();
+  }
+  if(certOverlay && certOverlay.style.display === "flex" && (isPrintScreen || isSave)){
+    updateCertificateValidation();
+    alert("Atenção: o certificado por print só é válido se marca d’água, identificador e código baterem com nome, turma, escola e data.");
+  }
+});
+
+document.addEventListener("contextmenu", function(e){
+  const certOverlay = document.getElementById("certOverlay");
+  if(certOverlay && certOverlay.style.display === "flex"){
+    e.preventDefault();
+    alert("Menu bloqueado no certificado. Use o botão IMPRIMIR após validação.");
+  }
+});
+
+document.addEventListener("click", function(e){
+  const certOverlay = document.getElementById("certOverlay");
+  if(certOverlay && e.target === certOverlay) closeCert();
+});
+</script>
+<!-- =========================================================
+     CERTIFICADO FINAL — ANTIFRAUDE NO PADRÃO DA AULA 11
+========================================================= -->
+<div id="certOverlay">
+  <div id="certCard">
+    <div id="certInner">
+      <div id="certWatermarkCloud" aria-hidden="true"></div>
+      <div id="certTitle">CERTIFICADO DE CONCLUSÃO</div>
+      <div id="certSub">Aula 12 Falange — Calendário e material escolar em espanhol</div>
+      <div id="certName">Estudante</div>
+      <div id="certMeta">
+        Concluiu com êxito todas as atividades interativas da Aula 12.
+        <br><br>
+        Escola: <span id="certSchool">—</span>
+        <br>
+        Turma: <span id="certClass">—</span>
+        <br>
+        Data: <span id="certDate">—</span> • Hora: <span id="certTime">—</span>
+        <br><br>
+        Código antifraude: <b><span id="certAntiCode">BLOQUEADO</span></b>
+        <br>
+        <small>Certificado válido somente com código antifraude gerado após a conclusão correta de todas as atividades.</small>
+        <div id="certWatermark">VALIDADO PELA AULA 12 • <span id="certAntiCodeWatermark">BLOQUEADO</span></div>
+        <div id="certValidationBox">
+          VALIDAÇÃO VISUAL: o código deve combinar com o NOME, ESCOLA, TURMA, DATA e HORA exibidos no certificado.
+          <br>Identificador: <span id="certFingerprint">BLOQUEADO</span>
+          <div class="certTamperNotice">Print editado perde validade se o nome/turma não aparecerem repetidos na marca d’água e no identificador.</div>
+        </div>
+      </div>
+      <div id="certBtns">
+        <button class="certBtn" type="button" onclick="printCert()">IMPRIMIR</button>
+        <button class="certBtn certBtnPrimary" type="button" onclick="closeCert()">FECHAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* =========================================================
+   TRAVA FINAL DEFINITIVA — CERTIFICADO SÓ APÓS TUDO CONCLUÍDO
+   ---------------------------------------------------------
+   Correção pontual:
+   - remove liberação antecipada;
+   - ignora progresso antigo/corrompido de versões anteriores;
+   - botão fica realmente desabilitado até 7/7 atividades;
+   - certificado só abre se todas as flags reais forem TRUE.
+========================================================= */
+(function(){
+  const REQUIRED_KEYS = ["a1","a2","a3","a4","a5","a6","a7"];
+  const PROGRESS_KEY = "falange_aula12_progress_v7_trava_absoluta_20260614";
+
+  function getState(){
+    if(!window.state){ window.state = { done:{} }; }
+    if(!state.done){ state.done = {}; }
+    REQUIRED_KEYS.forEach(k => { if(state.done[k] !== true) state.done[k] = false; });
+    return state.done;
+  }
+
+  function saveStrictProgress(){
+    try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(getState())); }catch(e){}
+  }
+
+  function loadStrictProgress(){
+    const done = getState();
+    REQUIRED_KEYS.forEach(k => done[k] = false);
+    try{
+      const saved = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}");
+      REQUIRED_KEYS.forEach(k => { done[k] = saved[k] === true; });
+    }catch(e){}
+    /* A memória nunca fica concluída só por cache: precisa do sinal real do jogo nesta sessão. */
+    if(!memoriaRealmenteCompleta()) done.a7 = false;
+    saveStrictProgress();
+  }
+
+  function memoriaRealmenteCompleta(){
+    const msg = document.getElementById("memoriaMsg4");
+    return !!(
+      msg &&
+      msg.dataset.memoriaCompleta === "1" &&
+      /Jogo da memória concluído automaticamente/i.test(msg.textContent || "")
+    );
+  }
+
+  function strictAutoDetectCompletion(){
+    const done = getState();
+
+    const cardFinal = document.getElementById("cardFinal");
+    if(cardFinal && cardFinal.hidden === false) done.a2 = true;
+
+    const soupDone = document.querySelectorAll("#soupWordList .soupChip.done").length;
+    if(soupDone >= 9) done.a3 = true;
+
+    const cardFinal4 = document.getElementById("cardFinal4");
+    if(cardFinal4 && cardFinal4.hidden === false) done.a4 = true;
+
+    const audioFill = document.getElementById("audioProgressFill5");
+    const audioFeedback = document.getElementById("audioGameFeedback5");
+    if(
+      (audioFill && String(audioFill.style.width || "").includes("100")) ||
+      (audioFeedback && /concluiu os 10 áudios|excelente/i.test(audioFeedback.textContent || ""))
+    ){
+      done.a5 = true;
+    }
+
+    done.a7 = memoriaRealmenteCompleta();
+    saveStrictProgress();
+  }
+
+  function allDoneStrict(){
+    strictAutoDetectCompletion();
+    const done = getState();
+    return REQUIRED_KEYS.every(k => done[k] === true);
+  }
+
+  function missingList(){
+    const done = getState();
+    const missing = [];
+    if(!done.a1) missing.push("Página 1 — finalizar leitura dos hotspots");
+    if(!done.a2) missing.push("Página 2 — completar ORDENA LAS PALABRAS");
+    if(!done.a3) missing.push("Página 2 — completar SOPA DE LETRAS");
+    if(!done.a6) missing.push("Página 3 — finalizar leitura dos hotspots");
+    if(!done.a4) missing.push("Página 4 — completar ORDENA LAS PALABRAS");
+    if(!done.a7) missing.push("Página 4 — encontrar TODOS os pares do jogo da memória");
+    if(!done.a5) missing.push("Página 5 — completar o jogo de escuta");
+    return missing;
+  }
+
+  window.smartAutoDetectCompletion = strictAutoDetectCompletion;
+
+  window.markDone = function(key, messageId, messageText){
+    const done = getState();
+    if(!REQUIRED_KEYS.includes(key)) return;
+
+    /* A memória só pode ser marcada pelo detector real do jogo, nunca por botão ou cache. */
+    if(key === "a7" && !memoriaRealmenteCompleta()){
+      const msg = document.getElementById("memoriaMsg4");
+      if(msg){
+        msg.textContent = "Abra o jogo e encontre todos os pares corretos. O sistema registrará somente no final do jogo.";
+        msg.style.background = "#eee";
+        msg.style.color = "#222";
+        msg.style.border = "none";
+      }
+      done.a7 = false;
+      saveStrictProgress();
+      window.updateCertButton();
+      return;
+    }
+
+    done[key] = true;
+    saveStrictProgress();
+
+    if(messageId){
+      const box = document.getElementById(messageId);
+      if(box){
+        box.textContent = messageText || "✅ Atividade concluída.";
+        box.style.background = "#d4edda";
+        box.style.color = "#155724";
+        box.style.border = "1px solid #c3e6cb";
+      }
+    }
+    window.updateCertButton();
+  };
+
+  window.allActivitiesDone = allDoneStrict;
+
+  window.updateCertButton = function(){
+    const btn = document.getElementById("btnCert");
+    if(!btn) return;
+    const ok = allDoneStrict();
+    btn.dataset.ready = ok ? "1" : "0";
+    btn.disabled = !ok;
+    btn.setAttribute("aria-disabled", ok ? "false" : "true");
+    btn.textContent = ok ? "🎓 GERAR CERTIFICADO ANTIFRAUDE" : "🔒 CERTIFICADO BLOQUEADO — CONCLUA TODAS AS ATIVIDADES";
+    btn.style.cursor = ok ? "pointer" : "not-allowed";
+    btn.style.opacity = ok ? "1" : ".62";
+    btn.style.filter = ok ? "none" : "grayscale(.25) saturate(.8)";
+  };
+
+  window.tryFinishAll = function(event){
+    if(event && event.preventDefault) event.preventDefault();
+    const ok = allDoneStrict();
+    if(!ok){
+      const missing = missingList();
+      alert("CERTIFICADO BLOQUEADO.\n\nAinda falta concluir:\n\n" + missing.join("\n") + "\n\nSó libera depois que TODAS as páginas e atividades forem concluídas.");
+      window.updateCertButton();
+      return false;
+    }
+    return window.openCert();
+  };
+
+  window.openCert = function(){
+    if(!allDoneStrict()){
+      window.tryFinishAll();
+      return false;
+    }
+    if(typeof updateCertificateValidation === "function") updateCertificateValidation();
+    document.body.classList.add("cert-ready");
+    const certOverlay = document.getElementById("certOverlay");
+    if(certOverlay) certOverlay.style.display = "flex";
+    return true;
+  };
+
+  window.printCert = function(){
+    if(!allDoneStrict()){
+      alert("Impressão bloqueada: finalize todas as páginas e atividades antes de imprimir o certificado.");
+      return false;
+    }
+    if(typeof updateCertificateValidation === "function") updateCertificateValidation();
+    window.print();
+    return true;
+  };
+
+  const certBtn = document.getElementById("btnCert");
+  if(certBtn){
+    certBtn.onclick = window.tryFinishAll;
+  }
+
+  /* Se algum script antigo tentar abrir o certificado antes da hora, esta trava fecha na hora. */
+  setInterval(function(){
+    const certOverlay = document.getElementById("certOverlay");
+    if(certOverlay && certOverlay.style.display === "flex" && !allDoneStrict()){
+      certOverlay.style.display = "none";
+      document.body.classList.remove("cert-ready");
+      window.updateCertButton();
+    }
+  }, 300);
+
+  loadStrictProgress();
+  setTimeout(window.updateCertButton, 0);
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   TRAVA ABSOLUTA FINAL — AULA 12
+   ---------------------------------------------------------
+   Esta camada é a autoridade final do certificado.
+   Ela evita progresso antigo, botão liberado antes da hora,
+   chamada por console e qualquer função antiga que tente abrir.
+========================================================= */
+(function(){
+  'use strict';
+
+  const KEYS = ['a1','a2','a3','a4','a5','a6','a7'];
+  const FINAL_KEY = 'falange_aula12_progress_v7_trava_absoluta_20260614';
+  const OLD_KEYS = [
+    'falange_aula12_progress_v2_bloqueio_total',
+    'falange_aula12_progress_v5_trava_definitiva'
+  ];
+
+  try{ OLD_KEYS.forEach(k => localStorage.removeItem(k)); }catch(e){}
+
+  function doneObj(){
+    if(typeof state === 'undefined' || !state.done) return {};
+    KEYS.forEach(k => { if(state.done[k] !== true) state.done[k] = false; });
+    return state.done;
+  }
+
+  function memoriaCompletaReal(){
+    const msg = document.getElementById('memoriaMsg4');
+    return !!(
+      msg &&
+      msg.dataset.memoriaCompleta === '1' &&
+      /Jogo da memória concluído automaticamente|Todos os pares foram encontrados/i.test(msg.textContent || '')
+    );
+  }
+
+  function detectarSemFacilitar(){
+    const d = doneObj();
+
+    const cardFinal = document.getElementById('cardFinal');
+    if(cardFinal && cardFinal.hidden === false) d.a2 = true;
+
+    const soupDone = document.querySelectorAll('#soupWordList .soupChip.done').length;
+    if(soupDone >= 9) d.a3 = true;
+
+    const cardFinal4 = document.getElementById('cardFinal4');
+    if(cardFinal4 && cardFinal4.hidden === false) d.a4 = true;
+
+    const audioFill = document.getElementById('audioProgressFill5');
+    const audioFeedback = document.getElementById('audioGameFeedback5');
+    const audioTexto = audioFeedback ? (audioFeedback.textContent || '') : '';
+    if((audioFill && String(audioFill.style.width || '').includes('100')) || /concluiu os 10 áudios|excelente/i.test(audioTexto)){
+      d.a5 = true;
+    }
+
+    /* A memória nunca vem de cache nem de botão. Só sinal real da conclusão. */
+    d.a7 = memoriaCompletaReal();
+
+    try{ localStorage.setItem(FINAL_KEY, JSON.stringify(d)); }catch(e){}
+    return d;
+  }
+
+  function carregarProgressoLimpo(){
+    const d = doneObj();
+    KEYS.forEach(k => d[k] = false);
+    try{
+      const saved = JSON.parse(localStorage.getItem(FINAL_KEY) || '{}');
+      KEYS.forEach(k => { d[k] = saved[k] === true; });
+    }catch(e){}
+
+    /* Segurança: a memória precisa ser validada na sessão atual. */
+    d.a7 = memoriaCompletaReal();
+    try{ localStorage.setItem(FINAL_KEY, JSON.stringify(d)); }catch(e){}
+  }
+
+  function tudoConcluido(){
+    const d = detectarSemFacilitar();
+    return KEYS.every(k => d[k] === true);
+  }
+
+  function faltando(){
+    const d = detectarSemFacilitar();
+    const lista = [];
+    if(!d.a1) lista.push('Página 1 — finalizar os hotspots');
+    if(!d.a2) lista.push('Página 2 — completar ORDENA LAS PALABRAS');
+    if(!d.a3) lista.push('Página 2 — completar SOPA DE LETRAS');
+    if(!d.a6) lista.push('Página 3 — finalizar os hotspots');
+    if(!d.a4) lista.push('Página 4 — completar ORDENA LAS PALABRAS');
+    if(!d.a7) lista.push('Página 4 — concluir automaticamente o JOGO DA MEMÓRIA encontrando todos os pares');
+    if(!d.a5) lista.push('Página 5 — completar o jogo de escuta');
+    return lista;
+  }
+
+  function atualizarBotaoCertificado(){
+    const btn = document.getElementById('btnCert');
+    const ok = tudoConcluido();
+    if(btn){
+      btn.dataset.ready = ok ? '1' : '0';
+      btn.disabled = !ok;
+      btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+      btn.textContent = ok ? '🎓 GERAR CERTIFICADO ANTIFRAUDE' : '🔒 CERTIFICADO BLOQUEADO — CONCLUA TODAS AS ATIVIDADES';
+      btn.style.display = ok ? 'block' : 'none';
+      btn.style.pointerEvents = ok ? 'auto' : 'none';
+      btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+      btn.style.opacity = ok ? '1' : '.62';
+      btn.style.filter = ok ? 'none' : 'grayscale(.25) saturate(.8)';
+    }
+    const overlay = document.getElementById('certOverlay');
+    if(overlay && overlay.style.display === 'flex' && !ok){
+      overlay.style.display = 'none';
+      document.body.classList.remove('cert-ready');
+    }
+    return ok;
+  }
+
+  function bloquearComAviso(){
+    const lista = faltando();
+    alert('CERTIFICADO BLOQUEADO.\n\nAinda falta concluir:\n\n' + lista.join('\n') + '\n\nO certificado só será liberado depois que TODAS as páginas e atividades forem concluídas.');
+    atualizarBotaoCertificado();
+    return false;
+  }
+
+  const markDoneOriginal = (typeof markDone === 'function') ? markDone : null;
+  window.markDone = function(key, messageId, messageText){
+    if(key === 'a7' && !memoriaCompletaReal()){
+      const d = doneObj();
+      d.a7 = false;
+      try{ localStorage.setItem(FINAL_KEY, JSON.stringify(d)); }catch(e){}
+      atualizarBotaoCertificado();
+      return false;
+    }
+    if(markDoneOriginal){
+      markDoneOriginal(key, messageId, messageText);
+    }else{
+      const d = doneObj();
+      if(KEYS.includes(key)) d[key] = true;
+    }
+    try{ localStorage.setItem(FINAL_KEY, JSON.stringify(doneObj())); }catch(e){}
+    atualizarBotaoCertificado();
+    return true;
+  };
+
+  window.allActivitiesDone = tudoConcluido;
+  window.updateCertButton = atualizarBotaoCertificado;
+
+  window.tryFinishAll = function(event){
+    if(event && event.preventDefault) event.preventDefault();
+    if(!tudoConcluido()) return bloquearComAviso();
+    return window.openCert();
+  };
+
+  window.openCert = function(){
+    if(!tudoConcluido()) return bloquearComAviso();
+    if(typeof updateCertificateValidation === 'function') updateCertificateValidation();
+    const overlay = document.getElementById('certOverlay');
+    document.body.classList.add('cert-ready');
+    if(overlay) overlay.style.display = 'flex';
+    return true;
+  };
+
+  window.printCert = function(){
+    if(!tudoConcluido()){
+      alert('Impressão bloqueada: conclua todas as páginas e atividades antes de imprimir o certificado.');
+      return false;
+    }
+    if(typeof updateCertificateValidation === 'function') updateCertificateValidation();
+    window.print();
+    return true;
+  };
+
+  document.addEventListener('click', function(e){
+    const btn = e.target && e.target.closest ? e.target.closest('#btnCert') : null;
+    if(btn){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      window.tryFinishAll(e);
+    }
+  }, true);
+
+  window.addEventListener('message', function(event){
+    if(event.data === 'MEMORIA4_OK' || event.data === 'memory-complete' || event.data === 'MEMORIA_CONCLUIDA'){
+      setTimeout(atualizarBotaoCertificado, 80);
+      setTimeout(atualizarBotaoCertificado, 400);
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function(){
+    carregarProgressoLimpo();
+    atualizarBotaoCertificado();
+  });
+
+  carregarProgressoLimpo();
+  atualizarBotaoCertificado();
+  setInterval(atualizarBotaoCertificado, 500);
+})();
+</script>
+
+</body>
+</html>
