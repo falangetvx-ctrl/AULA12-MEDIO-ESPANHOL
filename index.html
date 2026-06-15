@@ -2382,7 +2382,7 @@ iframe{
     <div class="memoria-iframe-wrap">
       <iframe
         id="memoriaFrame4"
-        src="memoria_jogo.html"
+        src="memoria_jogo_CORRIGIDO_VALIDANDO.html"
         title="Jogo da memória em espanhol"
         loading="lazy"
       ></iframe>
@@ -3120,8 +3120,7 @@ function openModal3(wordKey){
   viewedHotspots3.add(wordKey);
 
   if(viewedHotspots3.size === totalHotspots3){
-    state.done.a6 = true;
-    updateCertButton();
+    markDone("a6", "hotspotMsg3", "✅ Página 3 concluída.");
   }
 
   modalTitle3.textContent = wordKey.toUpperCase();
@@ -4110,96 +4109,11 @@ updateCertButton();
   }
 
   function instalarDetectorAutomaticoMemoria4(){
-    let doc;
-    try{
-      doc = memoriaFrame4.contentDocument || (memoriaFrame4.contentWindow && memoriaFrame4.contentWindow.document);
-    }catch(e){
-      return;
-    }
-    if(!doc || !doc.body || doc.__falangeMemoria4Detector) return;
-    doc.__falangeMemoria4Detector = true;
-
-    const palavrasVitoria = [
-      "parabéns, você encontrou",
-      "parabens, voce encontrou",
-      "jogo da memória concluído",
-      "jogo da memoria concluido",
-      "fim de jogo",
-      "você venceu",
-      "voce venceu",
-      "muy bien",
-      "felicitaciones"
-    ];
-
-    function visivel(el){
-      try{
-        const st = doc.defaultView.getComputedStyle(el);
-        const r = el.getBoundingClientRect();
-        return st.display !== "none" && st.visibility !== "hidden" && r.width > 0 && r.height > 0;
-      }catch(e){
-        return true;
-      }
-    }
-
-    function cartaPossivel(el){
-      const c = (el.className || "").toString().toLowerCase();
-      const id = (el.id || "").toLowerCase();
-      const role = (el.getAttribute("role") || "").toLowerCase();
-      return (
-        c.includes("card") || c.includes("carta") || c.includes("memory") || c.includes("memoria") ||
-        id.includes("card") || id.includes("carta") || id.includes("memory") || id.includes("memoria") ||
-        el.hasAttribute("data-card") || el.hasAttribute("data-pair") || role === "button"
-      );
-    }
-
-    function cartaResolvida(el){
-      const c = (el.className || "").toString().toLowerCase();
-      const aria = (el.getAttribute("aria-label") || "").toLowerCase();
-      const dataMatched = (el.getAttribute("data-matched") || "").toLowerCase();
-      return (
-        c.includes("matched") || c.includes("match") || c.includes("done") || c.includes("ok") ||
-        c.includes("found") || c.includes("acert") || c.includes("resolvid") || c.includes("par-ok") ||
-        dataMatched === "true" || aria.includes("encontrado") || aria.includes("correto")
-      );
-    }
-
-    function verificarConclusao(){
-      if(memoria4Concluida) return;
-
-      const texto = (doc.body.innerText || "").toLowerCase();
-      if(palavrasVitoria.some(p => texto.includes(p))){
-        concluirMemoria4Automaticamente();
-        return;
-      }
-
-      const elementos = Array.from(doc.querySelectorAll("button, [role='button'], [data-card], [data-pair], .memoryCard, .memory-card, .memoria-card, .carta, .card"))
-        .filter(el => visivel(el) && cartaPossivel(el));
-
-      const cartas = elementos.filter(el => {
-        const txt = (el.innerText || el.textContent || "").trim();
-        return txt.length > 0 || el.querySelector("img, svg");
-      });
-
-      if(cartas.length >= 4){
-        const resolvidas = cartas.filter(cartaResolvida);
-        if(resolvidas.length >= cartas.length){
-          concluirMemoria4Automaticamente();
-        }
-      }
-    }
-
-    doc.addEventListener("click", function(){
-      setTimeout(verificarConclusao, 350);
-      setTimeout(verificarConclusao, 900);
-    }, true);
-
-    const observer = new MutationObserver(function(){
-      setTimeout(verificarConclusao, 120);
-    });
-    observer.observe(doc.body, {subtree:true, childList:true, attributes:true, characterData:true});
-
-    setInterval(verificarConclusao, 1200);
-    setTimeout(verificarConclusao, 800);
+    /* AJUSTE PONTUAL: detector visual removido.
+       Ele marcava o jogo como concluído ao abrir/fechar o iframe.
+       A conclusão agora vem SOMENTE do próprio memoria_jogo.html,
+       quando matches === vocabularyData.length e ele envia MEMORIA4_OK. */
+    return;
   }
 
 
@@ -4239,7 +4153,7 @@ updateCertButton();
 }
 
 btnAbrirMemoria4.addEventListener("click", openMemoria4);
-memoriaFrame4.addEventListener("load", instalarDetectorAutomaticoMemoria4);
+/* Detector visual removido: não marcar ao carregar/fechar. */
 memoriaCloseBtn4.addEventListener("click", closeMemoria4);
 memoriaCloseBtnFooter4.addEventListener("click", closeMemoria4);
 memoriaOverlay4.addEventListener("click", closeMemoria4);
@@ -4252,6 +4166,9 @@ document.addEventListener("keydown", function(event){
 
 window.addEventListener("message", function(event){
   if(!event.data) return;
+  /* Só aceita conclusão enviada pelo iframe do jogo da memória.
+     Fechar o modal, carregar a página ou clicar fora não conclui. */
+  if(memoriaFrame4 && event.source && event.source !== memoriaFrame4.contentWindow) return;
 
   if(event.data === "MEMORIA4_OK" || event.data === "memory-complete" || event.data === "MEMORIA_CONCLUIDA"){
     concluirMemoria4Automaticamente();
@@ -4263,6 +4180,9 @@ window.addEventListener("message", function(event){
 ========================================================= */
 window.addEventListener("message", function(event){
   if(!event.data) return;
+  /* Só aceita conclusão enviada pelo iframe do jogo da memória.
+     Fechar o modal, carregar a página ou clicar fora não conclui. */
+  if(memoriaFrame4 && event.source && event.source !== memoriaFrame4.contentWindow) return;
 
   if(event.data === "MEMORIA4_OK" || event.data === "memory-complete" || event.data === "MEMORIA_CONCLUIDA"){
     concluirMemoria4Automaticamente();
@@ -5243,6 +5163,466 @@ document.addEventListener("click", function(e){
   carregarProgressoLimpo();
   atualizarBotaoCertificado();
   setInterval(atualizarBotaoCertificado, 500);
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   BLOQUEIO PONTUAL E DEFINITIVO DO JOGO DA MEMÓRIA
+   ---------------------------------------------------------
+   - NÃO mexe no memoria_jogo.html.
+   - Remove o clique antigo do botão da memória clonando o botão.
+   - Só abre a memória quando TODAS as outras atividades estão concluídas.
+   - Outras atividades = a1, a2, a3, a4, a5 e a6.
+========================================================= */
+(function(){
+  'use strict';
+
+  const OUTRAS_ATIVIDADES = ['a1','a2','a3','a4','a5','a6'];
+  const PROGRESS_KEY_MEMORIA = 'falange_aula12_progress_v7_trava_absoluta_20260614';
+  const MEMORIA_OK_KEY = 'falange_aula12_memoria4_ok_finalizada';
+
+  function progressoSalvo(){
+    try{ return JSON.parse(localStorage.getItem(PROGRESS_KEY_MEMORIA) || '{}') || {}; }catch(e){ return {}; }
+  }
+
+  function salvarDone(d){
+    try{ localStorage.setItem(PROGRESS_KEY_MEMORIA, JSON.stringify(d)); }catch(e){}
+  }
+
+  function registrarMemoriaConcluida(){
+    const d = getDone();
+    d.a7 = true;
+    window.state.done.a7 = true;
+    salvarDone(d);
+    const msg = document.getElementById('memoriaMsg4');
+    if(msg){
+      msg.dataset.memoriaCompleta = '1';
+      msg.textContent = '✅ Jogo da memória concluído automaticamente. Todos os pares foram encontrados.';
+      msg.style.background = '#d4edda';
+      msg.style.color = '#155724';
+      msg.style.border = '1px solid #c3e6cb';
+    }
+    const modal = document.getElementById('memoriaModal4');
+    if(modal){
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden','true');
+    }
+    if(typeof updateCertButton === 'function') updateCertButton();
+  }
+  window.registrarMemoriaConcluida = registrarMemoriaConcluida;
+
+  function getDone(){
+    if(typeof window.state === 'undefined') window.state = { done:{} };
+    if(!window.state.done) window.state.done = {};
+    const saved = progressoSalvo();
+    OUTRAS_ATIVIDADES.concat(['a7']).forEach(function(k){
+      if(window.state.done[k] !== true) window.state.done[k] = saved[k] === true;
+    });
+    return window.state.done;
+  }
+
+  function detectarOutrasAtividadesSemMemoria(){
+    const d = getDone();
+
+    const cardFinal = document.getElementById('cardFinal');
+    if(cardFinal && cardFinal.hidden === false) d.a2 = true;
+
+    const sopaOk = document.querySelectorAll('#soupWordList .soupChip.done').length;
+    if(sopaOk >= 9) d.a3 = true;
+
+    const cardFinal4 = document.getElementById('cardFinal4');
+    if(cardFinal4 && cardFinal4.hidden === false) d.a4 = true;
+
+    const audioFill = document.getElementById('audioProgressFill5');
+    const audioFeedback = document.getElementById('audioGameFeedback5');
+    const audioTexto = audioFeedback ? (audioFeedback.textContent || '') : '';
+    if((audioFill && String(audioFill.style.width || '').includes('100')) || /concluiu os 10 áudios|excelente/i.test(audioTexto)){
+      d.a5 = true;
+    }
+
+    salvarDone(d);
+
+    return d;
+  }
+
+  function memoriaPodeAbrir(){
+    const d = detectarOutrasAtividadesSemMemoria();
+    return OUTRAS_ATIVIDADES.every(function(k){ return d[k] === true; });
+  }
+
+  function pendenciasSemMemoria(){
+    const d = detectarOutrasAtividadesSemMemoria();
+    const faltam = [];
+    if(!d.a1) faltam.push('Página 1 — finalizar os hotspots');
+    if(!d.a2) faltam.push('Página 2 — completar ORDENA LAS PALABRAS');
+    if(!d.a3) faltam.push('Página 2 — completar SOPA DE LETRAS');
+    if(!d.a6) faltam.push('Página 3 — finalizar os hotspots');
+    if(!d.a4) faltam.push('Página 4 — completar ORDENA LAS PALABRAS');
+    if(!d.a5) faltam.push('Página 5 — completar o jogo de escuta');
+    return faltam;
+  }
+
+  function pintarBotaoMemoria(){
+    const btn = document.getElementById('btnAbrirMemoria4');
+    const msg = document.getElementById('memoriaMsg4');
+    if(!btn) return;
+
+    const pode = memoriaPodeAbrir();
+
+    btn.disabled = !pode;
+    btn.setAttribute('aria-disabled', pode ? 'false' : 'true');
+    btn.dataset.locked = pode ? '0' : '1';
+    btn.textContent = pode ? '🧠 ABRIR JOGO DA MEMÓRIA' : '🔒 JOGO DA MEMÓRIA BLOQUEADO';
+    btn.style.opacity = pode ? '1' : '.45';
+    btn.style.cursor = pode ? 'pointer' : 'not-allowed';
+    btn.style.filter = pode ? 'none' : 'grayscale(1)';
+
+    if(msg && !pode){
+      msg.textContent = '🔒 O jogo da memória só abre depois que TODAS as outras páginas e atividades forem concluídas.';
+      msg.style.background = '#f8d7da';
+      msg.style.color = '#721c24';
+      msg.style.border = '1px solid #f5c6cb';
+    }
+  }
+
+  function abrirMemoriaPermitida(){
+    const modal = document.getElementById('memoriaModal4');
+    const frame = document.getElementById('memoriaFrame4');
+    const msg = document.getElementById('memoriaMsg4');
+    if(!modal) return;
+
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+
+    try{ localStorage.removeItem(MEMORIA_OK_KEY); }catch(e){}
+
+    if(frame){
+      frame.setAttribute('src', 'memoria_jogo_CORRIGIDO.html?t=' + Date.now());
+    }
+
+    const d = getDone();
+    d.a7 = false;
+    salvarDone(d);
+    if(typeof updateCertButton === 'function') updateCertButton();
+
+    if(msg){
+      msg.dataset.memoriaCompleta = '0';
+      msg.textContent = '🧠 Jogo aberto. Encontre todos os pares para concluir.';
+      msg.style.background = '#fff3cd';
+      msg.style.color = '#664d03';
+      msg.style.border = '1px solid #ffecb5';
+    }
+  }
+
+  function bloquearAbertura(event){
+    if(!event || !event.target || !event.target.closest) return;
+    const btn = event.target.closest('#btnAbrirMemoria4');
+    if(!btn) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    if(!memoriaPodeAbrir()){
+      pintarBotaoMemoria();
+      alert('JOGO DA MEMÓRIA BLOQUEADO.\n\nAntes de abrir, conclua:\n\n' + pendenciasSemMemoria().join('\n'));
+      return false;
+    }
+
+    abrirMemoriaPermitida();
+    return false;
+  }
+
+  function instalarBloqueioReal(){
+    const btnOriginal = document.getElementById('btnAbrirMemoria4');
+    if(!btnOriginal) return;
+
+    /* Remove qualquer listener antigo que abria a memória antes da hora. */
+    const btnNovo = btnOriginal.cloneNode(true);
+    btnOriginal.parentNode.replaceChild(btnNovo, btnOriginal);
+
+    btnNovo.addEventListener('click', bloquearAbertura, true);
+    document.addEventListener('click', bloquearAbertura, true);
+
+    window.addEventListener('message', function(event){
+      if(event.data === 'MEMORIA4_OK' || event.data === 'memory-complete' || event.data === 'MEMORIA_CONCLUIDA'){
+        registrarMemoriaConcluida();
+      }
+    });
+
+    setInterval(function(){
+      try{
+        if(localStorage.getItem(MEMORIA_OK_KEY) === '1') registrarMemoriaConcluida();
+      }catch(e){}
+    }, 300);
+
+    pintarBotaoMemoria();
+    setInterval(pintarBotaoMemoria, 400);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', instalarBloqueioReal);
+  }else{
+    instalarBloqueioReal();
+  }
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   CORREÇÃO DEFINITIVA — BOTÃO DE CONFERIR COM VALIDAÇÃO REAL
+   ---------------------------------------------------------
+   O botão NÃO marca concluído sozinho.
+   Ele apenas confere se a atividade já foi concluída/correta.
+   O jogo da memória só abre quando a1,a2,a3,a4,a5,a6 estiverem
+   realmente concluídas.
+========================================================= */
+(function(){
+  'use strict';
+
+  const PROGRESS_KEY = 'falange_aula12_progress_v7_trava_absoluta_20260614';
+  const MEMORIA_OK_KEY = 'falange_aula12_memoria4_ok_finalizada';
+  const PRE_MEMORIA = ['a1','a2','a3','a4','a5','a6'];
+
+  function getDone(){
+    if(typeof window.state === 'undefined') window.state = { done:{} };
+    if(!window.state.done) window.state.done = {};
+    return window.state.done;
+  }
+
+  function saveOnlyRealDone(){
+    const d = getDone();
+    const real = validarTudoReal();
+    ['a1','a2','a3','a4','a5','a6'].forEach(k => d[k] = !!real[k]);
+    try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(d)); }catch(e){}
+    return d;
+  }
+
+  function setMsg(id, text, ok){
+    const box = document.getElementById(id);
+    if(!box) return;
+    box.textContent = text;
+    box.style.background = ok ? '#d4edda' : '#f8d7da';
+    box.style.color = ok ? '#155724' : '#721c24';
+    box.style.border = ok ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
+  }
+
+  function allHotspotsClicked(containerSelector){
+    const root = document.querySelector(containerSelector);
+    if(!root) return false;
+    const hs = Array.from(root.querySelectorAll('.word-hotspot'));
+    if(!hs.length) return false;
+    return hs.every(h => h.dataset.clickedFalange === '1');
+  }
+
+  /* Marca hotspot como visitado sem alterar layout. */
+  document.addEventListener('click', function(ev){
+    const h = ev.target && ev.target.closest ? ev.target.closest('.word-hotspot') : null;
+    if(h) h.dataset.clickedFalange = '1';
+  }, true);
+
+  function isPage2WordsDone(){
+    const finalCard = document.getElementById('cardFinal');
+    if(finalCard && finalCard.hidden === false) return true;
+    const bar = document.getElementById('barraInterna');
+    if(bar && String(bar.style.width || '').includes('100')) return true;
+    const lista = document.getElementById('listaAcertos');
+    if(lista && /10\s*\/\s*10|10 de 10|conclu/i.test(lista.textContent || '')) return true;
+    const feedback = document.getElementById('feedback');
+    return !!(feedback && /conclu|excelente|finaliz/i.test(feedback.textContent || ''));
+  }
+
+  function isSoupDone(){
+    const chips = Array.from(document.querySelectorAll('#pagina-jogo .soupChip.done, #soupWordListModal .soupChip.done'));
+    if(chips.length >= 9) return true;
+    const blanks = Array.from(document.querySelectorAll('#pagina-jogo .blank-word.done'));
+    if(blanks.length >= 9) return true;
+    const msg = document.getElementById('soupInlineMsg');
+    return !!(msg && /todas as palavras foram encontradas|atividade conclu/i.test(msg.textContent || ''));
+  }
+
+  function isPage4WordsDone(){
+    const finalCard = document.getElementById('cardFinal4');
+    if(finalCard && finalCard.hidden === false) return true;
+    const bar = document.getElementById('barraInterna4');
+    if(bar && String(bar.style.width || '').includes('100')) return true;
+    const lista = document.getElementById('listaAcertos4');
+    if(lista && /conclu|todas/i.test(lista.textContent || '')) return true;
+    const feedback = document.getElementById('feedback4');
+    return !!(feedback && /conclu|excelente|todas/i.test(feedback.textContent || ''));
+  }
+
+  function isAudioDone(){
+    const fill = document.getElementById('audioProgressFill5');
+    if(fill && String(fill.style.width || '').includes('100')) return true;
+    const feedback = document.getElementById('audioGameFeedback5');
+    return !!(feedback && /concluiu os 10 áudios|excelente|atividade conclu/i.test(feedback.textContent || ''));
+  }
+
+  function validarTudoReal(){
+    return {
+      a1: allHotspotsClicked('#pagina'),
+      a2: isPage2WordsDone(),
+      a3: isSoupDone(),
+      a4: isPage4WordsDone(),
+      a5: isAudioDone(),
+      a6: allHotspotsClicked('#pagina3')
+    };
+  }
+
+  function marcarSeReal(key, msgId, label){
+    const real = validarTudoReal();
+    const d = getDone();
+
+    if(real[key]){
+      d[key] = true;
+      try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(d)); }catch(e){}
+      if(typeof window.markDone === 'function'){
+        try{ window.markDone(key, msgId, '✅ ' + label + ' conferida corretamente e concluída.'); }catch(e){}
+      }
+      setMsg(msgId, '✅ ' + label + ' conferida corretamente e concluída.', true);
+    }else{
+      d[key] = false;
+      try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(d)); }catch(e){}
+      setMsg(msgId, '❌ ' + label + ' ainda não está concluída. Termine a atividade corretamente para marcar.', false);
+      alert(label + ' ainda NÃO está concluída. Termine corretamente primeiro.');
+    }
+
+    atualizarVisual();
+  }
+
+  function criarOuTrocarBotao(refId, key, msgId, label){
+    const ref = document.getElementById(refId);
+    if(!ref) return;
+
+    let btn = document.getElementById('btnConferir_' + key);
+    if(!btn){
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.id = 'btnConferir_' + key;
+      btn.className = 'ctrlBtn blue btnConferirAtividadeFalange';
+      btn.dataset.key = key;
+      btn.style.width = '100%';
+      btn.style.marginTop = '10px';
+      btn.style.color = '#fff';
+      ref.insertAdjacentElement('afterend', btn);
+    }
+
+    btn.textContent = '🔎 CONFERIR ATIVIDADE';
+    btn.style.background = '#3aa0e6';
+    btn.onclick = function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      marcarSeReal(key, msgId, label);
+      return false;
+    };
+  }
+
+  function pendenciasReais(){
+    const r = validarTudoReal();
+    const list = [];
+    if(!r.a1) list.push('Página 1 — clique/abra todos os pontos da imagem antes de conferir');
+    if(!r.a2) list.push('Página 2 — complete corretamente o jogo de palavras');
+    if(!r.a3) list.push('Página 2 — encontre todas as palavras da sopa de letras');
+    if(!r.a6) list.push('Página 3 — clique/abra todos os pontos da imagem antes de conferir');
+    if(!r.a4) list.push('Página 4 — complete corretamente o jogo de palavras');
+    if(!r.a5) list.push('Página 5 — complete corretamente o jogo de escuta');
+    return list;
+  }
+
+  function todasAntesDaMemoria(){
+    const r = validarTudoReal();
+    return PRE_MEMORIA.every(k => r[k] === true);
+  }
+
+  function atualizarVisual(){
+    const d = saveOnlyRealDone();
+    PRE_MEMORIA.forEach(function(k){
+      const btn = document.getElementById('btnConferir_' + k);
+      if(!btn) return;
+      if(d[k]){
+        btn.textContent = '✅ ATIVIDADE CONFERIDA E CONCLUÍDA';
+        btn.style.background = '#166534';
+      }else{
+        btn.textContent = '🔎 CONFERIR ATIVIDADE';
+        btn.style.background = '#3aa0e6';
+      }
+    });
+
+    const btnMem = document.getElementById('btnAbrirMemoria4');
+    const msg = document.getElementById('memoriaMsg4');
+    const ok = todasAntesDaMemoria();
+    if(btnMem){
+      btnMem.disabled = !ok;
+      btnMem.dataset.locked = ok ? '0' : '1';
+      btnMem.setAttribute('aria-disabled', ok ? 'false' : 'true');
+      btnMem.textContent = ok ? '🧠 ABRIR JOGO DA MEMÓRIA' : '🔒 JOGO DA MEMÓRIA BLOQUEADO';
+      btnMem.style.opacity = ok ? '1' : '.45';
+      btnMem.style.cursor = ok ? 'pointer' : 'not-allowed';
+      btnMem.style.filter = ok ? 'none' : 'grayscale(1)';
+    }
+    if(msg && msg.dataset.memoriaCompleta !== '1'){
+      if(ok) setMsg('memoriaMsg4', '✅ Todas as atividades foram concluídas de verdade. O jogo da memória está liberado.', true);
+      else setMsg('memoriaMsg4', '🔒 O jogo da memória só abre quando todas as atividades forem concluídas e conferidas corretamente.', false);
+    }
+
+    if(typeof window.updateCertButton === 'function'){
+      try{ window.updateCertButton(); }catch(e){}
+    }
+  }
+
+  function instalar(){
+    criarOuTrocarBotao('hotspotMsg1', 'a1', 'hotspotMsg1', 'Página 1');
+    criarOuTrocarBotao('feedback', 'a2', 'feedback', 'Página 2 — jogo de palavras');
+    criarOuTrocarBotao('soupInlineMsg', 'a3', 'soupInlineMsg', 'Página 2 — sopa de letras');
+    criarOuTrocarBotao('hotspotMsg3', 'a6', 'hotspotMsg3', 'Página 3');
+    criarOuTrocarBotao('feedback4', 'a4', 'feedback4', 'Página 4 — jogo de palavras');
+    criarOuTrocarBotao('audioGameFeedback5', 'a5', 'audioGameFeedback5', 'Página 5 — jogo de escuta');
+    atualizarVisual();
+  }
+
+  /* Bloqueio final do jogo da memória: ignora qualquer marcação falsa/cache. */
+  document.addEventListener('click', function(ev){
+    const btn = ev.target && ev.target.closest ? ev.target.closest('#btnAbrirMemoria4') : null;
+    if(!btn) return;
+    if(!todasAntesDaMemoria()){
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+      atualizarVisual();
+      alert('JOGO DA MEMÓRIA BLOQUEADO.\n\nAntes de abrir, falta concluir de verdade:\n\n' + pendenciasReais().join('\n'));
+      return false;
+    }
+  }, true);
+
+  /* Bloqueia os antigos botões de finalizar página 1 e 3 se os hotspots não foram visitados. */
+  document.addEventListener('click', function(ev){
+    const t = ev.target;
+    if(!t) return;
+    if(t.id === 'btnFinalizarHotspot1' && !allHotspotsClicked('#pagina')){
+      ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation();
+      setMsg('hotspotMsg1','❌ Abra todos os pontos da imagem antes de finalizar a página 1.', false);
+      alert('Página 1 ainda não está concluída. Clique em todos os pontos da imagem.');
+      return false;
+    }
+    if(t.id === 'btnFinalizarHotspot3' && !allHotspotsClicked('#pagina3')){
+      ev.preventDefault(); ev.stopPropagation(); ev.stopImmediatePropagation();
+      setMsg('hotspotMsg3','❌ Abra todos os pontos da imagem antes de finalizar a página 3.', false);
+      alert('Página 3 ainda não está concluída. Clique em todos os pontos da imagem.');
+      return false;
+    }
+  }, true);
+
+  window.memoriaPodeAbrirManualFalange = todasAntesDaMemoria;
+  window.atualizarBotaoMemoriaManualFalange = atualizarVisual;
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', instalar);
+  else instalar();
+
+  setInterval(atualizarVisual, 700);
 })();
 </script>
 
