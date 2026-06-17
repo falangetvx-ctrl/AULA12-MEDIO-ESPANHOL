@@ -1836,6 +1836,13 @@ iframe{
 }
 
   </style>
+
+<style>
+/* TRAVA VISUAL ABSOLUTA: certificado jamais aparece no registro/início */
+body:not(.certificado-liberado-final) #certOverlay{ display:none !important; visibility:hidden !important; opacity:0 !important; pointer-events:none !important; }
+body:not(.certificado-liberado-final) #btnCert{ display:none !important; }
+body.certificado-liberado-final #certOverlay[style*="display: flex"]{ visibility:visible !important; opacity:1 !important; pointer-events:auto !important; }
+</style>
 </head>
 
 <body>
@@ -2382,7 +2389,7 @@ iframe{
     <div class="memoria-iframe-wrap">
       <iframe
         id="memoriaFrame4"
-        src="memoria_jogo_CORRIGIDO_VALIDANDO.html"
+        src="memoria_jogo_CORRIGIDO_FINAL.html"
         title="Jogo da memória em espanhol"
         loading="lazy"
       ></iframe>
@@ -2705,20 +2712,39 @@ function smartAutoDetectCompletion(){
 
 function allActivitiesDone(){
   smartAutoDetectCompletion();
-  return !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && state.done.a7);
+  const memoriaConcluidaNaSessao = (window.__memoria4SessaoConcluida === true);
+  return !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && state.done.a7 && memoriaConcluidaNaSessao);
 }
 
 function updateCertButton(){
   const btn = document.getElementById("btnCert");
   if(!btn) return;
   saveProgress();
-  const allDone = !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && state.done.a7);
+
+  const memoriaConcluida = (state.done.a7 === true) && (window.__memoria4SessaoConcluida === true);
+  const allDone = !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && memoriaConcluida);
+
   btn.dataset.ready = allDone ? "1" : "0";
   btn.disabled = !allDone;
+  btn.setAttribute("aria-disabled", allDone ? "false" : "true");
   btn.textContent = allDone ? "🎓 GERAR CERTIFICADO ANTIFRAUDE" : "🔒 CERTIFICADO BLOQUEADO — CONCLUA TODAS AS ATIVIDADES";
   btn.style.cursor = allDone ? "pointer" : "not-allowed";
   btn.style.opacity = allDone ? "1" : ".62";
   btn.style.filter = allDone ? "none" : "grayscale(.25) saturate(.8)";
+
+  /* CORREÇÃO DEFINITIVA:
+     o CSS escondia o botão enquanto o body não tivesse esta classe.
+     Agora a classe é aplicada no mesmo momento em que todas as atividades,
+     incluindo o jogo da memória da sessão atual, ficam concluídas. */
+  if(allDone){
+    document.body.classList.add("certificado-liberado-final", "cert-ready");
+    btn.style.display = "block";
+  }else{
+    document.body.classList.remove("certificado-liberado-final", "cert-ready");
+    btn.style.display = "none";
+    const certOverlay = document.getElementById("certOverlay");
+    if(certOverlay) certOverlay.style.display = "none";
+  }
 }
 
 function tryFinishAll(){
@@ -4076,6 +4102,8 @@ updateCertButton();
    - fechar a modal
    - recarregar o iframe ao abrir, se desejar reiniciar
 ========================================================= */
+window.__memoria4SessaoConcluida = false;
+
 (function(){
   const btnAbrirMemoria4 = document.getElementById("btnAbrirMemoria4");
   const memoriaModal4 = document.getElementById("memoriaModal4");
@@ -4090,6 +4118,7 @@ updateCertButton();
   function concluirMemoria4Automaticamente(){
     if(memoria4Concluida) return;
     memoria4Concluida = true;
+    window.__memoria4SessaoConcluida = true;
 
     if(memoriaMsg4){
       memoriaMsg4.dataset.memoriaCompleta = "1";
@@ -4099,13 +4128,23 @@ updateCertButton();
 
     if(memoriaMsg4){
       memoriaMsg4.dataset.memoriaCompleta = "1";
-      memoriaMsg4.textContent = "✅ Jogo da memória concluído automaticamente. Todos os pares foram encontrados.";
+      memoriaMsg4.textContent = "✅ Jogo da memória concluído automaticamente. Todos os pares foram encontrados. Certificado liberado!";
       memoriaMsg4.style.background = "#d4edda";
       memoriaMsg4.style.color = "#155724";
       memoriaMsg4.style.border = "1px solid #c3e6cb";
     }
 
     closeMemoria4();
+
+    /* Após receber o aviso real do iframe, libera o botão imediatamente.
+       Se todas as outras atividades já estiverem concluídas, abre o certificado. */
+    updateCertButton();
+    setTimeout(function(){
+      updateCertButton();
+      if(allActivitiesDone()){
+        openCert();
+      }
+    }, 150);
   }
 
   function instalarDetectorAutomaticoMemoria4(){
@@ -4137,6 +4176,8 @@ updateCertButton();
 
     if(memoriaMsg4){
       memoriaMsg4.dataset.memoriaCompleta = "0";
+      memoria4Concluida = false;
+      window.__memoria4SessaoConcluida = false;
       state.done.a7 = false;
       saveProgress();
       updateCertButton();
@@ -4166,25 +4207,22 @@ document.addEventListener("keydown", function(event){
 
 window.addEventListener("message", function(event){
   if(!event.data) return;
-  /* Só aceita conclusão enviada pelo iframe do jogo da memória.
-     Fechar o modal, carregar a página ou clicar fora não conclui. */
+
+  /* Aceita SOMENTE o aviso enviado pelo iframe atual do jogo da memória.
+     O certificado NÃO libera por fechar, carregar, abrir modal ou progresso salvo. */
   if(memoriaFrame4 && event.source && event.source !== memoriaFrame4.contentWindow) return;
 
-  if(event.data === "MEMORIA4_OK" || event.data === "memory-complete" || event.data === "MEMORIA_CONCLUIDA"){
-    concluirMemoria4Automaticamente();
-  }
-});
+  const data = event.data;
+  const tipo = (typeof data === "string") ? data : (data && data.type);
+  const total = (typeof data === "object" && data) ? Number(data.totalPairs || 0) : 0;
+  const encontrados = (typeof data === "object" && data) ? Number(data.matches || 0) : 0;
 
-/* =========================================================
-   ESCUTA FINALIZAÇÃO DO JOGO DA MEMÓRIA
-========================================================= */
-window.addEventListener("message", function(event){
-  if(!event.data) return;
-  /* Só aceita conclusão enviada pelo iframe do jogo da memória.
-     Fechar o modal, carregar a página ou clicar fora não conclui. */
-  if(memoriaFrame4 && event.source && event.source !== memoriaFrame4.contentWindow) return;
-
-  if(event.data === "MEMORIA4_OK" || event.data === "memory-complete" || event.data === "MEMORIA_CONCLUIDA"){
+  if(
+    tipo === "MEMORIA4_OK" ||
+    tipo === "memory-complete" ||
+    tipo === "MEMORIA_CONCLUIDA" ||
+    (tipo === "FALANGE_MEMORIA_COMPLETA" && total > 0 && encontrados === total)
+  ){
     concluirMemoria4Automaticamente();
   }
 });
@@ -4637,7 +4675,8 @@ function studentInitials(){
 
 function allActivitiesDone(){
   smartAutoDetectCompletion();
-  return !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && state.done.a7);
+  const memoriaConcluidaNaSessao = (window.__memoria4SessaoConcluida === true);
+  return !!(state.done.a1 && state.done.a2 && state.done.a3 && state.done.a4 && state.done.a5 && state.done.a6 && state.done.a7 && memoriaConcluidaNaSessao);
 }
 
 function buildCertificateCode(){
@@ -4685,6 +4724,7 @@ function openCert(){
     tryFinishAll();
     return;
   }
+  document.body.classList.add("certificado-liberado-final", "cert-ready");
   updateCertificateValidation();
   certOverlay.style.display = "flex";
 }
@@ -5299,7 +5339,7 @@ document.addEventListener("click", function(e){
     try{ localStorage.removeItem(MEMORIA_OK_KEY); }catch(e){}
 
     if(frame){
-      frame.setAttribute('src', 'memoria_jogo_CORRIGIDO.html?t=' + Date.now());
+      frame.setAttribute('src', 'memoria_jogo_CORRIGIDO_FINAL.html?t=' + Date.now());
     }
 
     const d = getDone();
@@ -5624,6 +5664,223 @@ document.addEventListener("click", function(e){
 
   setInterval(atualizarVisual, 700);
 })();
+</script>
+
+
+<script>
+/* =========================================================
+   TRAVA FINAL DEFINITIVA DO CERTIFICADO
+   ---------------------------------------------------------
+   Regra absoluta:
+   - Ao entrar/registrar, certificado fica fechado.
+   - Nenhum progresso antigo do navegador libera o certificado.
+   - O certificado só abre quando o jogo da memória mandar o sinal
+     de TODOS OS PARES ENCONTRADOS nesta sessão atual.
+========================================================= */
+(function(){
+  'use strict';
+
+  const MEMORIA_OK_KEY = 'falange_aula12_memoria4_ok_finalizada';
+  const SESSION_MEMORIA_OK = 'falange_memoria_ok_sessao_atual_final';
+  const REQUIRED_BEFORE_MEMORY = ['a1','a2','a3','a4','a5','a6'];
+  const REQUIRED_ALL = ['a1','a2','a3','a4','a5','a6','a7'];
+
+  try{
+    localStorage.removeItem(MEMORIA_OK_KEY);
+    sessionStorage.removeItem(SESSION_MEMORIA_OK);
+  }catch(e){}
+
+  function getDone(){
+    if(typeof window.state === 'undefined') window.state = {done:{}};
+    if(!window.state.done) window.state.done = {};
+    REQUIRED_ALL.forEach(function(k){ if(window.state.done[k] !== true) window.state.done[k] = false; });
+    return window.state.done;
+  }
+
+  function fecharCertificadoAgora(){
+    const overlay = document.getElementById('certOverlay');
+    if(overlay){
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden','true');
+    }
+    document.body.classList.remove('cert-ready');
+    document.body.classList.remove('certificado-liberado-final');
+  }
+
+  function memoriaConcluidaNaSessao(){
+    const msg = document.getElementById('memoriaMsg4');
+    const sinalSessao = sessionStorage.getItem(SESSION_MEMORIA_OK) === 'true';
+    const sinalJanela = window.__memoria4SessaoConcluida === true;
+    const sinalLocal = localStorage.getItem(MEMORIA_OK_KEY) === 'true' || localStorage.getItem(MEMORIA_OK_KEY) === '1';
+    const msgOk = !!(msg && msg.dataset.memoriaCompleta === '1' && /todos os pares|jogo da memória concluído/i.test(msg.textContent || ''));
+
+    /* CORREÇÃO PONTUAL:
+       Se a própria página já mostrou a mensagem verde de "todos os pares foram encontrados",
+       o certificado deve liberar. Antes, a mensagem aparecia, mas o botão continuava bloqueado
+       quando o sinal de sessão não era gravado a tempo pelo navegador/iframe. */
+    return !!(msgOk || sinalSessao || sinalJanela || sinalLocal);
+  }
+
+  function marcarMemoriaCompletaFinal(){
+    const d = getDone();
+    d.a7 = true;
+    window.__memoria4SessaoConcluida = true;
+    try{
+      sessionStorage.setItem(SESSION_MEMORIA_OK, 'true');
+      localStorage.setItem(MEMORIA_OK_KEY, 'true');
+      localStorage.setItem(MEMORIA_OK_KEY + '_1', '1');
+    }catch(e){}
+    const msg = document.getElementById('memoriaMsg4');
+    if(msg){
+      msg.dataset.memoriaCompleta = '1';
+      msg.textContent = '✅ Jogo da memória concluído automaticamente. Todos os pares foram encontrados.';
+      msg.style.background = '#d4edda';
+      msg.style.color = '#155724';
+      msg.style.border = '1px solid #c3e6cb';
+    }
+    atualizarBotaoCertificadoFinal();
+  }
+  window.registrarMemoriaConcluida = marcarMemoriaCompletaFinal;
+
+  function todasAtividadesConcluidas(){
+    const d = getDone();
+    d.a7 = memoriaConcluidaNaSessao();
+    return REQUIRED_BEFORE_MEMORY.every(function(k){ return d[k] === true; }) && d.a7 === true;
+  }
+
+  function pendencias(){
+    const d = getDone();
+    const list = [];
+    if(!d.a1) list.push('Página 1 — finalizar/conferir a atividade');
+    if(!d.a2) list.push('Página 2 — completar o jogo de palavras');
+    if(!d.a3) list.push('Página 2 — completar a sopa de letras');
+    if(!d.a6) list.push('Página 3 — finalizar/conferir a atividade');
+    if(!d.a4) list.push('Página 4 — completar o jogo de palavras');
+    if(!d.a5) list.push('Página 5 — completar o jogo de escuta');
+    if(!memoriaConcluidaNaSessao()) list.push('Jogo da memória — encontrar TODOS os pares');
+    return list;
+  }
+
+  function atualizarBotaoCertificadoFinal(){
+    const btn = document.getElementById('btnCert');
+    const ok = todasAtividadesConcluidas();
+    if(btn){
+      btn.dataset.ready = ok ? '1' : '0';
+      btn.disabled = !ok;
+      btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+      btn.textContent = ok ? '🎓 GERAR CERTIFICADO ANTIFRAUDE' : '🔒 CERTIFICADO BLOQUEADO — CONCLUA TODAS AS ATIVIDADES';
+      btn.style.display = ok ? 'block' : 'none';
+      btn.style.pointerEvents = ok ? 'auto' : 'none';
+      btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+      btn.style.opacity = ok ? '1' : '.62';
+    }
+    if(!ok) fecharCertificadoAgora();
+    return ok;
+  }
+
+  window.allActivitiesDone = todasAtividadesConcluidas;
+  window.updateCertButton = atualizarBotaoCertificadoFinal;
+
+  window.tryFinishAll = function(event){
+    if(event && event.preventDefault) event.preventDefault();
+    if(!todasAtividadesConcluidas()){
+      fecharCertificadoAgora();
+      alert('CERTIFICADO BLOQUEADO.\n\nAinda falta concluir:\n\n' + pendencias().join('\n'));
+      return false;
+    }
+    return window.openCert();
+  };
+
+  window.openCert = function(){
+    if(!todasAtividadesConcluidas()){
+      fecharCertificadoAgora();
+      return false;
+    }
+    document.body.classList.add('certificado-liberado-final');
+    document.body.classList.add('cert-ready');
+    if(typeof updateCertificateValidation === 'function') updateCertificateValidation();
+    document.body.classList.add('certificado-liberado-final');
+    const overlay = document.getElementById('certOverlay');
+    if(overlay){
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden','false');
+    }
+    return true;
+  };
+
+  window.printCert = function(){
+    if(!todasAtividadesConcluidas()){
+      fecharCertificadoAgora();
+      alert('Impressão bloqueada: o certificado só imprime depois que TODOS os pares do jogo da memória forem encontrados.');
+      return false;
+    }
+    if(typeof updateCertificateValidation === 'function') updateCertificateValidation();
+    window.print();
+    return true;
+  };
+
+  window.addEventListener('message', function(event){
+    const data = event.data;
+    const okObjeto = data && typeof data === 'object' && data.type === 'FALANGE_MEMORIA_COMPLETA' && Number(data.matches) === Number(data.totalPairs) && Number(data.totalPairs) > 0;
+    if(data === 'MEMORIA4_OK' || data === 'memory-complete' || data === 'MEMORIA_CONCLUIDA' || okObjeto){
+      marcarMemoriaCompletaFinal();
+    }
+  });
+
+  document.addEventListener('click', function(e){
+    const start = e.target && e.target.closest ? e.target.closest('#startLessonBtn') : null;
+    if(start){
+      fecharCertificadoAgora();
+      const d = getDone();
+      d.a7 = false;
+      window.__memoria4SessaoConcluida = false;
+      try{
+        sessionStorage.removeItem(SESSION_MEMORIA_OK);
+        localStorage.removeItem(MEMORIA_OK_KEY);
+      }catch(err){}
+      setTimeout(fecharCertificadoAgora, 0);
+      setTimeout(fecharCertificadoAgora, 300);
+      setTimeout(atualizarBotaoCertificadoFinal, 500);
+    }
+
+    const cert = e.target && e.target.closest ? e.target.closest('#btnCert') : null;
+    if(cert){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      window.tryFinishAll(e);
+      return false;
+    }
+  }, true);
+
+  document.addEventListener('DOMContentLoaded', function(){
+    fecharCertificadoAgora();
+    atualizarBotaoCertificadoFinal();
+  });
+
+  fecharCertificadoAgora();
+  atualizarBotaoCertificadoFinal();
+  setInterval(function(){
+    atualizarBotaoCertificadoFinal();
+    if(!todasAtividadesConcluidas()) fecharCertificadoAgora();
+  }, 250);
+})();
+</script>
+
+
+<script>
+/* Botão do certificado — ligação direta e segura */
+document.addEventListener("DOMContentLoaded", function(){
+  const btn = document.getElementById("btnCert");
+  if(btn){
+    btn.addEventListener("click", function(){
+      if(btn.disabled || btn.dataset.ready !== "1"){
+        tryFinishAll();
+        return;
+      }
+      openCert();
+    });
+  }
+});
 </script>
 
 </body>

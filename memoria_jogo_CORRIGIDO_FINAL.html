@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jogo da Memória FALANGE — Vocabulário em Espanhol</title>
+
+  <!-- =========================================================
+       FONTE + TAILWIND
+  ========================================================== -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* =========================================================
+       1) PALETA FALANGE
+    ========================================================== */
+    :root{
+      --falange-dark:#1A1C3C;
+      --falange-cyan:#00BFFF;
+      --falange-orange:#FF8C00;
+      --falange-card-face:#1E3A8A;
+      --falange-card-back:#4f8287;
+      --falange-matched:#10B981;
+      --falange-red:#E74C3C;
+      --falange-ink:#ffffff;
+      --falange-soft:#f4f7fb;
+      --falange-yellow:#ffe066;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      background: linear-gradient(180deg, #1A1C3C 0%, #12142d 100%);
+      font-family:'Inter',sans-serif;
+      color:var(--falange-ink);
+      min-height:100vh;
+    }
+
+    .title-h1{
+      color:var(--falange-ink);
+      text-shadow:4px 4px 0px var(--falange-cyan);
+      letter-spacing:2px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .sub-hint{
+      font-weight:800;
+      opacity:.95;
+    }
+
+    .falange-box{
+      background:rgba(255,255,255,.05);
+      border:3px solid var(--falange-cyan);
+      box-shadow:8px 8px 0px var(--falange-orange);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    /* =========================================================
+       2) TABULEIRO
+    ========================================================== */
+    #game-board{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:14px;
+      width:100%;
+      max-width:1400px;
+      margin:0 auto;
+    }
+
+    @media (min-width:640px){
+      #game-board{
+        grid-template-columns:repeat(4, 1fr);
+      }
+    }
+
+    @media (min-width:900px){
+      #game-board{
+        grid-template-columns:repeat(5, 1fr);
+      }
+    }
+
+    @media (min-width:1200px){
+      #game-board{
+        grid-template-columns:repeat(6, 1fr);
+      }
+    }
+
+    /* =========================================================
+       3) CARTAS COM FLIP 3D
+    ========================================================== */
+    .card-container{
+      width:100%;
+      aspect-ratio:1 / 1;
+      position:relative;
+      perspective:1000px;
+    }
+
+    .card{
+      position:absolute;
+      inset:0;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .card-inner{
+      width:100%;
+      height:100%;
+      position:relative;
+      transform-style:preserve-3d;
+      transition:transform .55s ease;
+    }
+
+    .card.flipped .card-inner{
+      transform:rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back{
+      position:absolute;
+      inset:0;
+      backface-visibility:hidden;
+      border:4px solid var(--falange-cyan);
+      box-shadow:6px 6px 0px var(--falange-orange);
+      border-radius:16px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    .card-front{
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.15), transparent 35%),
+        linear-gradient(135deg, #4f8287, #2f5c60);
+      color:#fff;
+      padding:10px;
+    }
+
+    .card-front-mark{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      font-weight:900;
+    }
+
+    .card-front-mark .big-q{
+      font-size:clamp(2rem, 6vw, 3.5rem);
+      line-height:1;
+    }
+
+    .card-front-mark .small-txt{
+      font-size:clamp(.75rem, 2vw, 1rem);
+      letter-spacing:1px;
+      text-transform:uppercase;
+    }
+
+    .card-back{
+      transform:rotateY(180deg);
+      background:var(--falange-card-face);
+      padding:8px;
+    }
+
+    .card.matched .card-front,
+    .card.matched .card-back{
+      border-color:var(--falange-matched);
+      box-shadow:6px 6px 0px var(--falange-matched);
+      opacity:.88;
+      cursor:default;
+    }
+
+    /* =========================================================
+       4) CONTEÚDO DAS CARTAS
+    ========================================================== */
+    .pair-card{
+      width:100%;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:space-between;
+      background:#ffffff;
+      color:#111827;
+      border-radius:12px;
+      overflow:hidden;
+    }
+
+    .pair-image-wrap{
+      width:100%;
+      flex:1;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px;
+    }
+
+    .pair-image-wrap img{
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain;
+      border-radius:10px;
+      display:block;
+    }
+
+    .scramble-wrap{
+      width:100%;
+      background:var(--falange-yellow);
+      border-top:3px dashed #f97316;
+      padding:8px 6px 10px;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      min-height:72px;
+    }
+
+    .letter-box{
+      min-width:26px;
+      height:32px;
+      padding:0 6px;
+      background:#ffffff;
+      border:2px solid #d1d5db;
+      border-radius:4px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:clamp(.9rem, 1.6vw, 1.05rem);
+      color:#111;
+      line-height:1;
+      box-shadow:0 1px 0 rgba(0,0,0,.08);
+    }
+
+    .word-card{
+      width:100%;
+      height:100%;
+      background:linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+      color:#0f172a;
+      border-radius:12px;
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+
+    .word-card .label{
+      font-size:.85rem;
+      font-weight:900;
+      text-transform:uppercase;
+      color:#475569;
+      letter-spacing:1px;
+    }
+
+    .word-card .word{
+      font-size:clamp(1rem, 2.1vw, 1.45rem);
+      font-weight:900;
+      line-height:1.15;
+      text-align:center;
+      word-break:break-word;
+    }
+
+    /* =========================================================
+       5) PAINEL SUPERIOR
+    ========================================================== */
+    .stats{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      width:100%;
+      max-width:1400px;
+      margin:0 auto 20px;
+    }
+
+    @media (min-width:900px){
+      .stats{
+        grid-template-columns:1.2fr .9fr .9fr;
+      }
+    }
+
+    .stat-card{
+      background:rgba(255,255,255,.08);
+      border:3px solid var(--falange-cyan);
+      box-shadow:6px 6px 0px var(--falange-orange);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .stat-title{
+      font-size:.9rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      opacity:.95;
+      font-weight:900;
+      margin-bottom:6px;
+    }
+
+    .stat-value{
+      font-size:1.2rem;
+      font-weight:900;
+    }
+
+    .progress-bar{
+      width:100%;
+      height:18px;
+      background:rgba(255,255,255,.12);
+      border-radius:999px;
+      overflow:hidden;
+      border:2px solid rgba(255,255,255,.2);
+      margin-top:10px;
+    }
+
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--falange-cyan), #22c55e);
+      transition:width .35s ease;
+    }
+
+    /* =========================================================
+       6) BOTÃO
+    ========================================================== */
+    #restart-button{
+      background:var(--falange-red);
+      border:4px solid #fff;
+      box-shadow:4px 4px 0px var(--falange-cyan);
+      color:#fff;
+      font-weight:900;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      transition:transform .08s ease, box-shadow .08s ease;
+      border-radius:14px;
+      padding:14px 22px;
+      cursor:pointer;
+    }
+
+    #restart-button:hover{
+      transform:translateY(2px) translateX(2px);
+      box-shadow:2px 2px 0px var(--falange-cyan);
+    }
+
+    /* =========================================================
+       7) RODAPÉ DE CONTROLE
+    ========================================================== */
+    .bottom-actions{
+      display:flex;
+      justify-content:center;
+      margin-top:20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================
+       CABEÇALHO
+  ========================================================== -->
+  <main class="w-full px-4 py-6 sm:px-6 lg:px-8">
+    <header class="text-center mb-8 max-w-6xl mx-auto">
+      <h1 class="title-h1 text-3xl sm:text-4xl lg:text-5xl mb-3">
+        Jogo da Memória — Español
+      </h1>
+
+      <p class="sub-hint text-base sm:text-lg max-w-4xl mx-auto">
+        Encontre os pares corretos:
+        <span class="underline">imagem + palavra embaralhada</span>
+        ↔
+        <span class="underline">palavra correta em espanhol</span>
+      </p>
+    </header>
+
+    <!-- =========================================================
+         PAINEL DE STATUS
+    ========================================================== -->
+    <section class="stats">
+      <div class="stat-card">
+        <div class="stat-title">Objetivo</div>
+        <div class="stat-value">
+          Formar todos os pares do vocabulário em espanhol.
+        </div>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Pares encontrados</div>
+        <div id="pairs-found" class="stat-value">0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">Mensagem</div>
+        <div id="message" class="stat-value">Clique em duas cartas para começar.</div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         TABULEIRO
+    ========================================================== -->
+    <section id="game-board"></section>
+
+    <!-- =========================================================
+         BOTÃO REINICIAR
+    ========================================================== -->
+    <div class="bottom-actions">
+      <button id="restart-button" style="display:none;">Reiniciar</button>
+    </div>
+  </main>
+
+  <script>
+    /* =========================================================
+       1) DADOS DO JOGO
+       ---------------------------------------------------------
+       Cada item tem:
+       - word: palavra correta
+       - scrambled: palavra embaralhada
+       - image: nome do arquivo da imagem
+    ========================================================== */
+    const vocabularyData = [
+      { word:"agenda",          scrambled:"naadeg",       image:"agenda.jpg" },
+      { word:"bolígrafo",       scrambled:"ílbaoofrg",    image:"boligrafo.jpg" },
+      { word:"calculadora",     scrambled:"rlcoadaucla",  image:"calculadora.jpg" },
+      { word:"cuaderno",        scrambled:"cauderon",     image:"cuaderno.jpg" },
+      { word:"estuche",         scrambled:"cehutse",      image:"estuche.jpg" },
+      { word:"febrero",         scrambled:"fberero",      image:"febrero.png" },
+      { word:"goma de borrar",  scrambled:"amgode rabrror", image:"goma de borrar.jpg" },
+      { word:"invierno",        scrambled:"inervnio",     image:"invierno.png" },
+      { word:"jueves",          scrambled:"jvusee",       image:"jueves.png" },
+      { word:"julio",           scrambled:"ijluo",        image:"julio.png" },
+      { word:"junio",           scrambled:"ijnuo",        image:"junio.png" },
+      { word:"lápiz",           scrambled:"álzpi",        image:"lapiz.jpg" },
+      { word:"libro",           scrambled:"robil",        image:"libro.jpg" },
+      { word:"lunes",           scrambled:"selun",        image:"lunes.png" },
+      { word:"martes",          scrambled:"tmsear",       image:"martes.png" },
+      { word:"miércoles",       scrambled:"césmoielr",    image:"miercoles.png" },
+      { word:"mochila",         scrambled:"omcihla",      image:"mochila.jpg" },
+      { word:"noviembre",       scrambled:"venmoiber",    image:"noviembre.png" },
+      { word:"ordenador",       scrambled:"rodnaedro",    image:"ordenador.jpg" },
+      { word:"otoño",           scrambled:"tñooo",        image:"otono.png" },
+      { word:"pizarra",         scrambled:"rraipza",      image:"pizarra.jpg" },
+      { word:"regla",           scrambled:"lager",        image:"regla.jpg" },
+      { word:"sábado",          scrambled:"ábsdoa",       image:"sabado.png" },
+      { word:"sacapuntas",      scrambled:"caspuansta",   image:"sacapuntas.jpg" },
+      { word:"septiembre",      scrambled:"sepmtibeer",   image:"septiembre.png" },
+      { word:"subrayador",      scrambled:"yasubrdoar",   image:"subrayador.jpg" },
+      { word:"tijeras",         scrambled:"rtjeias",      image:"tijeras.jpg" },
+      { word:"verano",          scrambled:"anervo",       image:"verano.png" },
+      { word:"viernes",         scrambled:"sevrein",      image:"viernes.png" }
+    ];
+
+    /* =========================================================
+       2) ELEMENTOS DA TELA
+    ========================================================== */
+    const gameBoard   = document.getElementById("game-board");
+    const messageEl   = document.getElementById("message");
+    const pairsFoundEl = document.getElementById("pairs-found");
+    const progressFill = document.getElementById("progress-fill");
+    const restartBtn  = document.getElementById("restart-button");
+
+    /* =========================================================
+       3) ESTADO DO JOGO
+    ========================================================== */
+    let cardsArray = [];
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let matches = 0;
+
+    const MEMORIA_OK_KEY = "falange_aula12_memoria4_ok_finalizada";
+    try{ localStorage.removeItem(MEMORIA_OK_KEY); }catch(e){}
+
+    /* =========================================================
+       4) FUNÇÃO PARA EMBARALHAR ARRAY
+    ========================================================== */
+    function shuffle(array){
+      for(let i = array.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    /* =========================================================
+       5) TRANSFORMA TEXTO EMBARALHADO EM "CAIXINHAS"
+       ---------------------------------------------------------
+       Espaços viram quebra visual sem caixa.
+    ========================================================== */
+    function buildScrambledBoxes(scrambledText){
+      return scrambledText
+        .split("")
+        .map(char => {
+          if(char === " "){
+            return `<span style="width:10px; display:inline-block;"></span>`;
+          }
+          return `<span class="letter-box">${char}</span>`;
+        })
+        .join("");
+    }
+
+    /* =========================================================
+       6) HTML DA CARTA TIPO A
+       ---------------------------------------------------------
+       IMAGEM + PALAVRA EMBARALHADA
+    ========================================================== */
+    function renderImageScrambledCard(item){
+      return `
+        <div class="pair-card">
+          <div class="pair-image-wrap">
+            <img src="${item.image}" alt="${item.word}">
+          </div>
+          <div class="scramble-wrap">
+            ${buildScrambledBoxes(item.scrambled)}
+          </div>
+        </div>
+      `;
+    }
+
+    /* =========================================================
+       7) HTML DA CARTA TIPO B
+       ---------------------------------------------------------
+       PALAVRA CORRETA
+    ========================================================== */
+    function renderCorrectWordCard(item){
+      return `
+        <div class="word-card">
+          <div class="label">Palavra correta</div>
+          <div class="word">${item.word}</div>
+        </div>
+      `;
+    }
+
+    /* =========================================================
+       8) CRIAR CARTAS
+       ---------------------------------------------------------
+       Para cada vocabulário:
+       - 1 carta com imagem + embaralhada
+       - 1 carta com palavra correta
+    ========================================================== */
+    function createCards(){
+      cardsArray = [];
+
+      vocabularyData.forEach((item, index) => {
+        cardsArray.push({
+          matchId:index,
+          type:"imageScrambled",
+          valueHTML:renderImageScrambledCard(item)
+        });
+
+        cardsArray.push({
+          matchId:index,
+          type:"correctWord",
+          valueHTML:renderCorrectWordCard(item)
+        });
+      });
+
+      shuffle(cardsArray);
+    }
+
+    /* =========================================================
+       9) RENDERIZAR CARTAS
+    ========================================================== */
+    function renderCards(){
+      gameBoard.innerHTML = "";
+
+      cardsArray.forEach(cardData => {
+        const container = document.createElement("div");
+        container.className = "card-container";
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.matchId = String(cardData.matchId);
+        card.dataset.type = cardData.type;
+
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">
+              <div class="card-front-mark">
+                <div class="big-q">?</div>
+                <div class="small-txt">Falange</div>
+              </div>
+            </div>
+
+            <div class="card-back">
+              ${cardData.valueHTML}
+            </div>
+          </div>
+        `;
+
+        card.addEventListener("click", flipCard);
+        container.appendChild(card);
+        gameBoard.appendChild(container);
+      });
+    }
+
+    /* =========================================================
+       10) VIRAR CARTA
+    ========================================================== */
+    function flipCard(){
+      if(lockBoard) return;
+      if(this === firstCard) return;
+      if(this.classList.contains("matched")) return;
+
+      this.classList.add("flipped");
+
+      if(!firstCard){
+        firstCard = this;
+        return;
+      }
+
+      secondCard = this;
+      lockBoard = true;
+      checkMatch();
+    }
+
+    /* =========================================================
+       11) VERIFICAR SE É PAR
+       ---------------------------------------------------------
+       Regras:
+       - matchId deve ser igual
+       - tipo deve ser diferente
+    ========================================================== */
+    function checkMatch(){
+      const sameId = firstCard.dataset.matchId === secondCard.dataset.matchId;
+      const differentType = firstCard.dataset.type !== secondCard.dataset.type;
+      const isMatch = sameId && differentType;
+
+      if(isMatch){
+        markAsMatched();
+      }else{
+        unflipCards();
+      }
+    }
+
+    /* =========================================================
+       12) QUANDO ACERTA
+    ========================================================== */
+    function markAsMatched(){
+  firstCard.classList.add("matched");
+  secondCard.classList.add("matched");
+
+  matches++;
+  updateStatus();
+
+  resetTurn();
+
+  if(matches === vocabularyData.length){
+    try{ localStorage.setItem(MEMORIA_OK_KEY, "1"); }catch(e){}
+    try{
+      const payload = {
+        type:"FALANGE_MEMORIA_COMPLETA",
+        matches:matches,
+        totalPairs:vocabularyData.length
+      };
+      window.parent.postMessage(payload, "*");
+      window.parent.postMessage("MEMORIA4_OK", "*");
+
+      /* Reenvia algumas vezes para evitar falha de comunicação em navegador local/iframe. */
+      let avisos = 0;
+      const avisoTimer = setInterval(function(){
+        avisos++;
+        try{
+          window.parent.postMessage(payload, "*");
+          window.parent.postMessage("MEMORIA4_OK", "*");
+        }catch(err){}
+        if(avisos >= 8) clearInterval(avisoTimer);
+      }, 350);
+    }catch(e){}
+    messageEl.textContent = "¡Excelente! Completaste todo el juego.";
+    restartBtn.style.display = "inline-block";
+  }else{
+    messageEl.textContent = "¡Muy bien! Encontraste un par correcto.";
+  }
+}
+
+    /* =========================================================
+       13) QUANDO ERRA
+    ========================================================== */
+    function unflipCards(){
+      messageEl.textContent = "No coinciden. Intenta otra vez.";
+
+      setTimeout(() => {
+        firstCard.classList.remove("flipped");
+        secondCard.classList.remove("flipped");
+        resetTurn();
+      }, 900);
+    }
+
+    /* =========================================================
+       14) RESET DO TURNO
+    ========================================================== */
+    function resetTurn(){
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+    }
+
+    /* =========================================================
+       15) ATUALIZAR STATUS
+    ========================================================== */
+    function updateStatus(){
+      pairsFoundEl.textContent = `${matches} / ${vocabularyData.length}`;
+      const progress = (matches / vocabularyData.length) * 100;
+      progressFill.style.width = `${progress}%`;
+    }
+
+    /* =========================================================
+       16) INICIAR / REINICIAR JOGO
+    ========================================================== */
+    function startGame(){
+      matches = 0;
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+
+      pairsFoundEl.textContent = `0 / ${vocabularyData.length}`;
+      progressFill.style.width = "0%";
+      messageEl.textContent = "Clique em duas cartas para começar.";
+      restartBtn.style.display = "none";
+
+      createCards();
+      renderCards();
+    }
+
+    restartBtn.addEventListener("click", startGame);
+
+    /* =========================================================
+       17) INÍCIO AUTOMÁTICO
+    ========================================================== */
+    startGame();
+  </script>
+</body>
+</html>
